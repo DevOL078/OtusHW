@@ -22,21 +22,19 @@ public class TestRunner {
 
     private void findMethods() {
         Method[] methods = clazz.getDeclaredMethods();
-        for(Method method : methods) {
-            if(method.isAnnotationPresent(Before.class)) {
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Before.class)) {
                 beforeMethodsNames.add(method.getName());
-            }
-            else if(method.isAnnotationPresent(Test.class)) {
+            } else if (method.isAnnotationPresent(Test.class)) {
                 testMethodsNames.add(method.getName());
-            }
-            else if(method.isAnnotationPresent(After.class)) {
+            } else if (method.isAnnotationPresent(After.class)) {
                 afterMethodsNames.add(method.getName());
             }
         }
     }
 
     public void run() {
-        for(String methodName : testMethodsNames) {
+        for (String methodName : testMethodsNames) {
             Object instance = null;
             try {
                 instance = clazz.getDeclaredConstructor().newInstance();
@@ -47,7 +45,7 @@ public class TestRunner {
                 System.err.println("Exception in method " + methodName);
                 System.err.println(e.getMessage());
             } finally {
-                if(instance != null) {
+                if (instance != null) {
                     runAfter(instance);
                 }
             }
@@ -56,13 +54,13 @@ public class TestRunner {
     }
 
     private void runBefore(Object object) throws Exception {
-        for(String methodName: beforeMethodsNames) {
+        for (String methodName : beforeMethodsNames) {
             callMethod(object, methodName);
         }
     }
 
     private void runAfter(Object object) {
-        for(String methodName: afterMethodsNames) {
+        for (String methodName : afterMethodsNames) {
             try {
                 callMethod(object, methodName);
             } catch (Exception e) {
@@ -86,7 +84,7 @@ public class TestRunner {
         } catch (IllegalAccessException e) {
             System.err.println("No access to method " + methodName);
         } finally {
-            if(method != null && method.canAccess(object)) {
+            if (method != null && method.canAccess(object)) {
                 method.setAccessible(false);
             }
         }
