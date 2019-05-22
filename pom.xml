@@ -12,6 +12,7 @@
     <modules>
         <module>hw01-maven</module>
         <module>hw02-collections</module>
+        <module>hw04-bytecode</module>
     </modules>
 
     <properties>
@@ -32,6 +33,16 @@
                 <artifactId>junit-jupiter-engine</artifactId>
                 <version>5.3.1</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>7.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.25.0-GA</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
