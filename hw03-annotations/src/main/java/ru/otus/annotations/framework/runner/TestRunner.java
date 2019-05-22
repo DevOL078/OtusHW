@@ -11,15 +11,12 @@ import java.util.List;
 public class TestRunner {
 
     private Class<?> clazz;
-    private List<String> beforeMethodsNames;
-    private List<String> testMethodsNames;
-    private List<String> afterMethodsNames;
+    private final List<String> beforeMethodsNames = new ArrayList<>();
+    private final List<String> testMethodsNames = new ArrayList<>();
+    private final List<String> afterMethodsNames = new ArrayList<>();
 
     public TestRunner(String className) throws ClassNotFoundException {
         this.clazz = Class.forName(className);
-        this.beforeMethodsNames = new ArrayList<>();
-        this.testMethodsNames = new ArrayList<>();
-        this.afterMethodsNames = new ArrayList<>();
         findMethods();
     }
 
@@ -49,9 +46,10 @@ public class TestRunner {
             } catch (Exception e) {
                 System.err.println("Exception in method " + methodName);
                 System.err.println(e.getMessage());
-            }
-            if(instance != null) {
-                runAfter(instance);
+            } finally {
+                if(instance != null) {
+                    runAfter(instance);
+                }
             }
             System.out.println("===========================");
         }
