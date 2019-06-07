@@ -43,16 +43,20 @@ public class CellWrapper extends AbstractCellWrapper {
     @Override
     public void addCash(List<CashType> cashList) {
         CashType cashType = this.cell.getCashType();
-        List<CashType> cashOfCashType = new ArrayList<>();
+        List<CashType> listOfCashType = new ArrayList<>();
         for (CashType type : cashList) {
             if (type == cashType) {
-                cashOfCashType.add(type);
+                listOfCashType.add(type);
             }
         }
-        this.cell.addCash(cashOfCashType.size());
+        this.cell.addCash(listOfCashType.size());
+        cashList.removeAll(listOfCashType);
         if (this.next != null) {
-            cashList.removeAll(cashOfCashType);
             this.next.addCash(cashList);
+        } else {
+            if(!cashList.isEmpty()) {
+                throw new IllegalStateException("Illegal cash type: " + cashList.get(0));
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package ru.otus.atm;
 
+import ru.otus.atm.exceptions.NotEnoughCashException;
+
 public class Cell implements ICell {
 
     private CashType cashType;
@@ -18,7 +20,7 @@ public class Cell implements ICell {
     public void removeCash(int billCount) {
         int newCount = this.billCount - billCount;
         if (newCount < 0) {
-            throw new IllegalStateException("Impossible to remove cash from cell " + cashType.getNumber());
+            throw new NotEnoughCashException("Impossible to remove cash from cell " + cashType.getNumber());
         }
         this.billCount = newCount;
     }
