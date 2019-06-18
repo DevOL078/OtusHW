@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SmartATM extends AbstractATM {
 
-    private AbstractCellWrapper firstWrapper;
+    protected AbstractCellWrapper firstWrapper;
 
     @Override
     public void setFirstWrapper(AbstractCellWrapper wrapper) {
@@ -22,7 +22,7 @@ public class SmartATM extends AbstractATM {
     }
 
     @Override
-    public int getTotalBalance() {
+    public int getBalance() {
         int balance = 0;
         AbstractCellWrapper currentWrapper = firstWrapper;
         balance += currentWrapper.getCell().getBalance();

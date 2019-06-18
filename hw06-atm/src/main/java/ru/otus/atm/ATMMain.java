@@ -8,12 +8,12 @@ public class ATMMain {
     public static void main(String[] args) {
         AbstractATM atm = new SmartATM();
 
-        CellWrapperChainBuilder wrapperBuilder = new CellWrapperChainBuilder(CashType.FIVE_THOUSAND);
-        wrapperBuilder.next(CashType.FIVE_THOUSAND)
+        CellWrapperChainBuilder wrapperBuilder = new CellWrapperChainBuilder();
+        wrapperBuilder.first(CashType.FIVE_THOUSAND)
                 .next(CashType.ONE_THOUSAND)
                 .next(CashType.FIVE_HUNDREDS)
-                .next(CashType.ONE_HUNDRED);
-               // .next(CashType.FIFTY);
+                .next(CashType.ONE_HUNDRED)
+                .next(CashType.FIFTY);
 
         atm.setFirstWrapper(wrapperBuilder.getFirstWrapper());
 
@@ -42,12 +42,12 @@ public class ATMMain {
 
         atm.addCash(cash);
 
-        System.out.println("Start balance: " + atm.getTotalBalance());
+        System.out.println("Start balance: " + atm.getBalance());
 
         List<CashType> cashFormATM = atm.giveCash(8750);
         System.out.println(cashFormATM);
 
-        System.out.println("New balance: " + atm.getTotalBalance());
+        System.out.println("New balance: " + atm.getBalance());
     }
 
 }

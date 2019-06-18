@@ -15,6 +15,7 @@
         <module>hw03-annotations</module>
         <module>hw04-bytecode</module>
         <module>hw06-atm</module>
+        <module>hw07-dep-atm</module>
     </modules>
 
     <properties>

@@ -10,6 +10,6 @@ public abstract class AbstractATM {
 
     public abstract List<CashType> giveCash(int sum);
 
-    public abstract int getTotalBalance();
+    public abstract int getBalance();
 
 }

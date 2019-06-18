@@ -4,15 +4,19 @@ import java.util.List;
 
 public abstract class AbstractCellWrapper {
 
-    protected ICell cell;
-    protected AbstractCellWrapper next;
+    ICell cell;
+    AbstractCellWrapper next;
 
-    public AbstractCellWrapper(ICell cell) {
+    AbstractCellWrapper(ICell cell) {
         this.cell = cell;
     }
 
     public void setNext(AbstractCellWrapper wrapper) {
         this.next = wrapper;
+    }
+
+    public AbstractCellWrapper getNext() {
+        return this.next;
     }
 
     public ICell getCell() {
