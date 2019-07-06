@@ -2,6 +2,7 @@ package ru.otus.depatm;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ATMDepartment {
 
@@ -26,9 +27,9 @@ public class ATMDepartment {
     }
 
     int getTotalDepartmentBalance() {
-        final int[] balance = {0};
-        mementoMap.keySet().forEach(m -> balance[0] += m.getBalance());
-        return balance[0];
+        final AtomicInteger balance = new AtomicInteger(0);
+        mementoMap.keySet().forEach(m -> balance.set(balance.get() + m.getBalance()));
+        return balance.get();
     }
 
     void resetATMs() {

@@ -4,8 +4,8 @@ import java.util.List;
 
 public abstract class AbstractCellWrapper {
 
-    ICell cell;
-    AbstractCellWrapper next;
+    protected ICell cell;
+    protected AbstractCellWrapper next;
 
     AbstractCellWrapper(ICell cell) {
         this.cell = cell;
