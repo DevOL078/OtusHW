@@ -1,0 +1,11 @@
+[2019-07-06T19:25:27.216+0300][0.062s][info][gc] Using Parallel
+[2019-07-06T19:25:58.129+0300][30.975s][info][gc] GC(0) Pause Young (Allocation Failure) 64M->25M(245M) 76.743ms
+[2019-07-06T19:26:38.364+0300][71.210s][info][gc] GC(1) Pause Young (Allocation Failure) 89M->63M(245M) 152.759ms
+[2019-07-06T19:27:24.644+0300][117.491s][info][gc] GC(2) Pause Young (Allocation Failure) 127M->122M(245M) 193.038ms
+[2019-07-06T19:27:25.103+0300][117.949s][info][gc] GC(3) Pause Full (Ergonomics) 122M->76M(245M) 458.035ms
+[2019-07-06T19:27:57.306+0300][150.152s][info][gc] GC(4) Pause Young (Allocation Failure) 140M->136M(245M) 141.690ms
+[2019-07-06T19:27:57.817+0300][150.663s][info][gc] GC(5) Pause Full (Ergonomics) 136M->97M(245M) 509.950ms
+[2019-07-06T19:29:10.531+0300][223.377s][info][gc] GC(6) Pause Full (Ergonomics) 214M->139M(245M) 542.674ms
+[2019-07-06T19:30:07.277+0300][280.123s][info][gc] GC(7) Pause Full (Ergonomics) 189M->167M(245M) 647.434ms
+[2019-07-06T19:30:07.282+0300][280.128s][info][gc] GC(8) Pause Young (Allocation Failure) 167M->167M(235M) 4.907ms
+[2019-07-06T19:30:08.098+0300][280.944s][info][gc] GC(9) Pause Full (Allocation Failure) 167M->166M(220M) 814.925ms

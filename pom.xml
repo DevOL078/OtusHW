@@ -16,6 +16,7 @@
         <module>hw04-bytecode</module>
         <module>hw06-atm</module>
         <module>hw07-dep-atm</module>
+        <module>hw05-gc</module>
     </modules>
 
     <properties>

@@ -1,0 +1,49 @@
+[2019-07-06T19:08:21.412+0300][0.050s][debug][gc] ConcGCThreads: 1 offset 8
+[2019-07-06T19:08:21.412+0300][0.050s][debug][gc] ParallelGCThreads: 4
+[2019-07-06T19:08:21.412+0300][0.051s][debug][gc] Initialize mark stack with 4096 chunks, maximum 16384
+[2019-07-06T19:08:21.434+0300][0.072s][info ][gc] Using G1
+[2019-07-06T19:08:30.758+0300][9.397s][info ][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 19M->15M(256M) 66.375ms
+[2019-07-06T19:08:35.423+0300][14.062s][info ][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 29M->24M(256M) 20.522ms
+[2019-07-06T19:08:46.568+0300][25.206s][info ][gc] GC(2) Pause Young (Normal) (G1 Evacuation Pause) 46M->45M(256M) 25.517ms
+[2019-07-06T19:08:58.658+0300][37.296s][info ][gc] GC(3) Pause Young (Normal) (G1 Evacuation Pause) 67M->66M(256M) 31.511ms
+[2019-07-06T19:09:18.296+0300][56.934s][info ][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 99M->98M(256M) 53.970ms
+[2019-07-06T19:09:43.837+0300][82.475s][info ][gc] GC(5) Pause Young (Normal) (G1 Evacuation Pause) 120M->118M(256M) 43.875ms
+[2019-07-06T19:09:44.851+0300][83.490s][info ][gc] GC(6) Pause Young (Concurrent Start) (G1 Humongous Allocation) 119M->120M(256M) 13.693ms
+[2019-07-06T19:09:44.852+0300][83.490s][info ][gc] GC(7) Concurrent Cycle
+[2019-07-06T19:09:45.084+0300][83.721s][debug][gc] GC(7) Reclaimed 51 empty regions
+[2019-07-06T19:09:45.084+0300][83.721s][info ][gc] GC(7) Pause Remark 145M->94M(256M) 6.172ms
+[2019-07-06T19:09:45.258+0300][83.896s][info ][gc] GC(7) Pause Cleanup 94M->94M(256M) 0.114ms
+[2019-07-06T19:09:45.259+0300][83.897s][info ][gc] GC(7) Concurrent Cycle 407.372ms
+[2019-07-06T19:10:23.374+0300][122.012s][info ][gc] GC(8) Pause Young (Prepare Mixed) (G1 Evacuation Pause) 127M->123M(256M) 54.721ms
+[2019-07-06T19:10:31.354+0300][129.993s][info ][gc] GC(9) Pause Young (Mixed) (G1 Evacuation Pause) 166M->161M(256M) 23.919ms
+[2019-07-06T19:10:56.617+0300][155.255s][info ][gc] GC(10) Pause Young (Concurrent Start) (G1 Evacuation Pause) 183M->181M(256M) 34.053ms
+[2019-07-06T19:10:56.617+0300][155.255s][info ][gc] GC(11) Concurrent Cycle
+[2019-07-06T19:10:57.059+0300][155.697s][debug][gc] GC(11) Reclaimed 61 empty regions
+[2019-07-06T19:10:57.059+0300][155.697s][info ][gc] GC(11) Pause Remark 181M->120M(256M) 3.738ms
+[2019-07-06T19:10:57.270+0300][155.909s][info ][gc] GC(11) Pause Cleanup 120M->120M(256M) 0.492ms
+[2019-07-06T19:10:57.272+0300][155.910s][info ][gc] GC(11) Concurrent Cycle 655.150ms
+[2019-07-06T19:11:15.199+0300][173.836s][info ][gc] GC(12) Pause Young (Prepare Mixed) (G1 Evacuation Pause) 136M->135M(256M) 30.282ms
+[2019-07-06T19:11:25.246+0300][183.884s][info ][gc] GC(13) Pause Young (Mixed) (G1 Evacuation Pause) 144M->139M(256M) 19.159ms
+[2019-07-06T19:11:27.259+0300][185.897s][info ][gc] GC(14) Pause Young (Concurrent Start) (G1 Humongous Allocation) 141M->141M(256M) 8.291ms
+[2019-07-06T19:11:27.260+0300][185.897s][info ][gc] GC(15) Concurrent Cycle
+[2019-07-06T19:11:27.800+0300][186.438s][debug][gc] GC(15) Reclaimed 12 empty regions
+[2019-07-06T19:11:27.800+0300][186.438s][info ][gc] GC(15) Pause Remark 194M->182M(256M) 5.748ms
+[2019-07-06T19:11:28.119+0300][186.757s][info ][gc] GC(15) Pause Cleanup 182M->182M(256M) 0.107ms
+[2019-07-06T19:11:28.120+0300][186.758s][info ][gc] GC(15) Concurrent Cycle 860.570ms
+[2019-07-06T19:11:59.523+0300][218.161s][info ][gc] GC(16) Pause Young (Prepare Mixed) (G1 Evacuation Pause) 210M->206M(256M) 52.192ms
+[2019-07-06T19:12:08.585+0300][227.223s][info ][gc] GC(17) Pause Young (Mixed) (G1 Evacuation Pause) 214M->209M(256M) 19.934ms
+[2019-07-06T19:12:20.635+0300][239.272s][info ][gc] GC(18) Pause Young (Concurrent Start) (G1 Evacuation Pause) 219M->219M(256M) 19.985ms
+[2019-07-06T19:12:20.635+0300][239.272s][info ][gc] GC(19) Concurrent Cycle
+[2019-07-06T19:12:21.258+0300][239.896s][debug][gc] GC(19) Reclaimed 53 empty regions
+[2019-07-06T19:12:21.258+0300][239.896s][info ][gc] GC(19) Pause Remark 219M->166M(256M) 6.138ms
+[2019-07-06T19:12:21.624+0300][240.262s][info ][gc] GC(19) Pause Cleanup 166M->166M(256M) 0.148ms
+[2019-07-06T19:12:21.625+0300][240.263s][info ][gc] GC(19) Concurrent Cycle 990.870ms
+[2019-07-06T19:12:31.694+0300][250.332s][info ][gc] GC(20) Pause Young (Prepare Mixed) (G1 Evacuation Pause) 176M->175M(256M) 18.868ms
+[2019-07-06T19:12:43.511+0300][262.149s][info ][gc] GC(21) Pause Young (Mixed) (G1 Evacuation Pause) 185M->184M(256M) 21.540ms
+[2019-07-06T19:12:59.541+0300][278.179s][info ][gc] GC(22) Pause Young (Concurrent Start) (G1 Evacuation Pause) 198M->197M(256M) 22.728ms
+[2019-07-06T19:12:59.541+0300][278.179s][info ][gc] GC(23) Concurrent Cycle
+[2019-07-06T19:12:59.778+0300][278.416s][info ][gc] GC(24) Pause Young (Normal) (G1 Humongous Allocation) 197M->198M(256M) 6.103ms
+[2019-07-06T19:12:59.778+0300][278.416s][debug][gc] GC(25) Clear Next Bitmap 0.357ms
+[2019-07-06T19:13:00.019+0300][278.656s][info ][gc] GC(25) Pause Full (G1 Humongous Allocation) 198M->167M(256M) 240.101ms
+[2019-07-06T19:13:00.248+0300][278.886s][info ][gc] GC(26) Pause Full (G1 Humongous Allocation) 167M->167M(256M) 228.795ms
+[2019-07-06T19:13:00.248+0300][278.886s][info ][gc] GC(23) Concurrent Cycle 707.302ms
