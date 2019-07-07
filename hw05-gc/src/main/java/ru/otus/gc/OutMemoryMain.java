@@ -24,16 +24,16 @@ public class OutMemoryMain {
         final int limit = Integer.MAX_VALUE;
 
         List<Integer> list = new ArrayList<>();
-        for(int i = 1; i < limit; ++i) {
+        for (int i = 1; i < limit; ++i) {
             list.add(Integer.valueOf(i));
 
-            if(i % 1000000 == 0) {
-                for(int j = 0; j < list.size() / 2; ++j) {
+            if (i % 1000000 == 0) {
+                for (int j = 0; j < list.size() / 2; ++j) {
                     list.set(j, null);
                 }
             }
 
-            if(i % 50000 == 0) {
+            if (i % 50000 == 0) {
                 Thread.sleep(1000);
             }
         }
