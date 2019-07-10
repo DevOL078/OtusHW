@@ -13,17 +13,21 @@ package ru.otus.gc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class OutMemoryMain {
 
+    private static List<Integer> list;
+
     public static void main(String[] args) throws InterruptedException {
+        calculateObjectsPerSecond();
         doExperiment();
     }
 
     private static void doExperiment() throws InterruptedException {
         final int limit = Integer.MAX_VALUE;
 
-        List<Integer> list = new ArrayList<>();
+        list = new ArrayList<>();
         for (int i = 1; i < limit; ++i) {
             list.add(Integer.valueOf(i));
 
@@ -37,6 +41,24 @@ public class OutMemoryMain {
                 Thread.sleep(1000);
             }
         }
+    }
+
+    private static void calculateObjectsPerSecond() {
+        AtomicInteger oldSize = new AtomicInteger(0);
+        new Thread(() -> {
+            while(true) {
+                int listSize = list.size();
+                int delta = listSize - oldSize.get();
+                oldSize.set(listSize);
+                System.out.println(delta);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
     }
 
 }

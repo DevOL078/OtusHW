@@ -64,6 +64,14 @@ public class LogAnalysis {
             double midRemark = remarkReport.stream().reduce((a, b) -> a + b).get() / remarkReport.size();
             System.out.println("Remark middle value: " + midRemark);
         }
+
+        double ySum = youngReport.stream().reduce((a, b) -> a+b).get();
+        double fSum = fullReport.stream().reduce((a, b) -> a+b).get();
+        if(!remarkReport.isEmpty()) {
+            double rSum = remarkReport.stream().reduce((a, b) -> a+b).get();
+            fSum += rSum;
+        }
+        System.out.println("Total pause time: " + (ySum + fSum));
     }
 
     private static double getTimeFromString(String str) {
