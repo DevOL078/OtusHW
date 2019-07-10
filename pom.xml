@@ -17,6 +17,7 @@
         <module>hw05-gc</module>
         <module>hw06-atm</module>
         <module>hw07-dep-atm</module>
+        <module>hw08-json</module>
     </modules>
 
     <properties>
