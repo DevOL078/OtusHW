@@ -9,6 +9,7 @@ public class Person {
     private final int age;
     private final double height;
     private final boolean gender;
+    private final Person bestFriend;
     private final Person[] contacts;
     private final int[] marks;
     private final List<String> specifications;
@@ -17,6 +18,7 @@ public class Person {
            int age,
            double height,
            boolean gender,
+           Person bestFriend,
            Person[] contacts,
            int[] marks,
            List<String> specifications) {
@@ -24,6 +26,7 @@ public class Person {
         this.age = age;
         this.height = height;
         this.gender = gender;
+        this.bestFriend = bestFriend;
         this.contacts = contacts;
         this.marks = marks;
         this.specifications = specifications;
@@ -37,6 +40,12 @@ public class Person {
         }
 
         Person that = (Person) o;
+
+        if(this.bestFriend != null) {
+            if(!this.bestFriend.equals(that.bestFriend)) return false;
+        } else if(that.bestFriend != null) {
+            return false;
+        }
 
         if(!Objects.equals(this.name, that.name)) return false;
         if(this.age != that.age) return false;
@@ -54,6 +63,7 @@ public class Person {
                 ", age=" + this.age +
                 ", gender=" + this.gender +
                 ", height=" + this.height +
+                ", bestFriend=" + this.bestFriend.toString() +
                 ", marks=" + Arrays.toString(this.marks) +
                 ", contacts=" + Arrays.toString(this.contacts) +
                 ", specifications=" + this.specifications +

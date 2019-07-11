@@ -2,22 +2,28 @@ package ru.otus.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.junit.Test;
 
 import java.util.Arrays;
 
-public class Main {
+import static org.junit.Assert.*;
 
-    public static void main(String[] args) {
+public class JSONSerializerTest {
+
+    @Test
+    public void toJson() {
         Person personFrom = new Person(
                 "David",
                 25,
                 182.5,
                 true,
+                null,
                 new Person[]{new Person(
                         "Man",
                         23,
                         180.0,
                         true,
+                        null,
                         new Person[]{},
                         new int[]{5, 3},
                         Arrays.asList("fat", "strong")
@@ -31,8 +37,6 @@ public class Main {
         System.out.println(json);
         Gson gson = new GsonBuilder().create();
         Person personTo = gson.fromJson(json, Person.class);
-        System.out.print("PersonFrom equals PersonTo: ");
-        System.out.println(personFrom.equals(personTo));
+        assertEquals(personFrom, personTo);
     }
-
 }
