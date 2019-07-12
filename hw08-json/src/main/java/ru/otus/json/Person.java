@@ -63,7 +63,7 @@ public class Person {
                 ", age=" + this.age +
                 ", gender=" + this.gender +
                 ", height=" + this.height +
-                ", bestFriend=" + this.bestFriend.toString() +
+                ", bestFriend=" + (bestFriend == null ? "null" : this.bestFriend.toString()) +
                 ", marks=" + Arrays.toString(this.marks) +
                 ", contacts=" + Arrays.toString(this.contacts) +
                 ", specifications=" + this.specifications +
