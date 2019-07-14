@@ -13,6 +13,7 @@ public class Person {
     private final Person[] contacts;
     private final int[] marks;
     private final List<String> specifications;
+    private final static String CONST_STATIC = "CONST_STATIC";
 
     Person(String name,
            int age,

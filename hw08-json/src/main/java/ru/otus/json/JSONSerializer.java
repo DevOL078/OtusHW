@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ClassUtils;
 import javax.json.*;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 class JSONSerializer {
@@ -22,6 +23,9 @@ class JSONSerializer {
         Field[] srcFields = srcClass.getDeclaredFields();
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
         for (Field field : srcFields) {
+            if(Modifier.isStatic(field.getModifiers())) {
+                break;
+            }
             serializeField(field, src, jsonBuilder);
         }
         return jsonBuilder.build();
@@ -35,10 +39,9 @@ class JSONSerializer {
                 builder.add(field.getName(), JsonValue.NULL);
                 return;
             }
-            String typeName = field.getType().getSimpleName();
             List<Class<?>> fieldTypeInterfaces = ClassUtils.getAllInterfaces(field.getType());
             Object jsonValue = getPrimitiveJsonValue(value);
-            if (field.getType().isPrimitive() || typeName.equals("String")) {
+            if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
                 builder.add(field.getName(), (JsonValue) jsonValue);
             } else if (field.getType().isArray()) {
                 builder.add(field.getName(), (JsonArray) jsonValue);
@@ -58,7 +61,7 @@ class JSONSerializer {
         }
     }
 
-    private Object getPrimitiveJsonValue(Object value) {
+    private JsonValue getPrimitiveJsonValue(Object value) {
         if(value == null) {
             return JsonValue.NULL;
         }
@@ -100,7 +103,7 @@ class JSONSerializer {
             Object element = Array.get(value, i);
             Class<?> elementClass = element.getClass();
             if (ClassUtils.isPrimitiveOrWrapper(elementClass) || elementClass.equals(String.class)) {
-                arrayBuilder.add((JsonValue) getPrimitiveJsonValue(element));
+                arrayBuilder.add(getPrimitiveJsonValue(element));
             } else {
                 arrayBuilder.add(toJsonObject(element));
             }
