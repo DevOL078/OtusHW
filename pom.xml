@@ -18,6 +18,7 @@
         <module>hw06-atm</module>
         <module>hw07-dep-atm</module>
         <module>hw08-json</module>
+        <module>hw09-jdbc</module>
     </modules>
 
     <properties>
