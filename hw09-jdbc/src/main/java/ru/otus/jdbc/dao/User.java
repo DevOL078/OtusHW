@@ -42,14 +42,14 @@ public class User {
 
     @Override
     public boolean equals(Object other) {
-        if(other == null || !other.getClass().equals(User.class)) {
+        if (other == null || !other.getClass().equals(User.class)) {
             return false;
         }
-        if(this == other) return true;
+        if (this == other) return true;
 
-        User that = (User)other;
-        if(this.id != that.getId()) return false;
-        if(!this.name.equals(that.getName())) return false;
+        User that = (User) other;
+        if (this.id != that.getId()) return false;
+        if (!this.name.equals(that.getName())) return false;
         return this.age == that.getAge();
     }
 

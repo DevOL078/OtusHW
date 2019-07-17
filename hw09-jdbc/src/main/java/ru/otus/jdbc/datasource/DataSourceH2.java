@@ -1,4 +1,4 @@
-package ru.otus.jdbc.service;
+package ru.otus.jdbc.datasource;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;

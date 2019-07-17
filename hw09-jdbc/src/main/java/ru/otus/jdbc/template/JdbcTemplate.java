@@ -97,8 +97,25 @@ public class JdbcTemplate<T> {
         }
     }
 
-    public void createOrUpdate(T objectDAO) {
+    // Return id, if objectDao updated, -1, if objectDao created
+    public long createOrUpdate(T objectDAO) throws SQLException {
+        long id = 0;
+        try {
+            identificationField.setAccessible(true);
+            id = (long) identificationField.get(objectDAO);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } finally {
+            identificationField.setAccessible(false);
+        }
 
+        Optional<T> loadedObject = load(id);
+        if (loadedObject.isPresent()) {
+            update(objectDAO);
+            return -1;
+        } else {
+            return create(objectDAO);
+        }
     }
 
     public Optional<T> load(long id) throws SQLException {

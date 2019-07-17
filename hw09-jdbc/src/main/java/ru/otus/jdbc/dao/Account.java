@@ -44,14 +44,14 @@ public class Account {
 
     @Override
     public boolean equals(Object other) {
-        if(other == null || !other.getClass().equals(Account.class)) {
+        if (other == null || !other.getClass().equals(Account.class)) {
             return false;
         }
-        if(this == other) return true;
+        if (this == other) return true;
 
         Account that = (Account) other;
-        if(this.no != that.getNo()) return false;
-        if(!this.type.equals(that.getType())) return false;
+        if (this.no != that.getNo()) return false;
+        if (!this.type.equals(that.getType())) return false;
         return this.rest.equals(that.getRest());
     }
 

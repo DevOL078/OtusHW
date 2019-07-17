@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.jdbc.dao.Account;
-import ru.otus.jdbc.service.DataSourceH2;
+import ru.otus.jdbc.datasource.DataSourceH2;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
@@ -22,9 +22,9 @@ class JdbcTemplateTestAccount {
     @BeforeAll
     static void beforeAll() throws SQLException {
         dataSource = new DataSourceH2();
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement pst = connection.prepareStatement(
-                    "create table account ( no bigint(20) NOT NULL auto_increment, type varchar(255), rest number)")) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement pst = connection.prepareStatement(
+                     "create table if not exists account( no bigint(20) NOT NULL auto_increment, type varchar(255), rest number)")) {
             pst.executeUpdate();
         }
     }
@@ -69,6 +69,28 @@ class JdbcTemplateTestAccount {
         jdbcTemplate.update(createdAccount);
         Account loadedAccount = jdbcTemplate.load(createdAccount.getNo()).get();
         assertEquals(createdAccount, loadedAccount);
+    }
+
+    @Test
+    void testCreateOrUpdate() throws SQLException {
+        //Create and save user
+        Account createdAccount = new Account("Free", BigDecimal.valueOf(1000));
+        long no = jdbcTemplate.createOrUpdate(createdAccount);
+        assertNotEquals(-1, no);
+        createdAccount.setNo(no);
+
+        //Load user for checking
+        Account loadedAccount = jdbcTemplate.load(no).get();
+        assertEquals(createdAccount, loadedAccount);
+
+        //Change user and save
+        loadedAccount.setRest(BigDecimal.valueOf(500));
+        long newNo = jdbcTemplate.createOrUpdate(loadedAccount);
+        assertEquals(-1, newNo);
+
+        //Load updated user
+        Account updatedAccount = jdbcTemplate.load(loadedAccount.getNo()).get();
+        assertEquals(loadedAccount, updatedAccount);
     }
 
 }

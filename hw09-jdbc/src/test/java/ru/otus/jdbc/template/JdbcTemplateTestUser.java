@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.otus.jdbc.dao.User;
-import ru.otus.jdbc.service.DataSourceH2;
+import ru.otus.jdbc.datasource.DataSourceH2;
 
 import javax.sql.DataSource;
 
@@ -22,9 +22,9 @@ class JdbcTemplateTestUser {
     @BeforeAll
     static void beforeAll() throws SQLException {
         dataSource = new DataSourceH2();
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement pst = connection.prepareStatement(
-                    "create table user ( id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3))")) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement pst = connection.prepareStatement(
+                     "create table if not exists user( id bigint(20) NOT NULL auto_increment, name varchar(255), age int(3))")) {
             pst.executeUpdate();
         }
     }
@@ -52,8 +52,8 @@ class JdbcTemplateTestUser {
     }
 
     @Test
-    void testSave() throws SQLException {
-        User createdUser = new User("David", 25);
+    void testCreateAndLoad() throws SQLException {
+        User createdUser = new User("Max", 25);
         long id = jdbcTemplate.create(createdUser);
         createdUser.setId(id);
         User loadedUser = jdbcTemplate.load(id).get();
@@ -62,13 +62,35 @@ class JdbcTemplateTestUser {
 
     @Test
     void testUpdate() throws SQLException {
-        User createdUser = new User("David", 25);
+        User createdUser = new User("Gandalf", 25);
         long id = jdbcTemplate.create(createdUser);
         createdUser.setId(id);
         createdUser.setName("Frodo");
         jdbcTemplate.update(createdUser);
         User loadedUser = jdbcTemplate.load(createdUser.getId()).get();
         assertEquals(createdUser, loadedUser);
+    }
+
+    @Test
+    void testCreateOrUpdate() throws SQLException {
+        //Create and save user
+        User createdUser = new User("Legolas", 25);
+        long id = jdbcTemplate.createOrUpdate(createdUser);
+        assertNotEquals(-1, id);
+        createdUser.setId(id);
+
+        //Load user for checking
+        User loadedUser = jdbcTemplate.load(id).get();
+        assertEquals(createdUser, loadedUser);
+
+        //Change user and save
+        loadedUser.setName("Gollum");
+        long newId = jdbcTemplate.createOrUpdate(loadedUser);
+        assertEquals(-1, newId);
+
+        //Load updated user
+        User updatedUser = jdbcTemplate.load(loadedUser.getId()).get();
+        assertEquals(loadedUser, updatedUser);
     }
 
 }
