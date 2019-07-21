@@ -18,12 +18,19 @@ public class JdbcTemplate<T> {
     private QueryTemplateFabric queryTemplateFabric = new QueryTemplateFabric();
 
     public JdbcTemplate(Class<T> clazz, DataSource dataSource, Function<ResultSet, T> rsMapper) {
+        if (clazz == null) {
+            throw new IllegalArgumentException("clazz is null");
+        }
+        if (dataSource == null) {
+            throw new IllegalArgumentException("datasource is null");
+        }
+        if (rsMapper == null) {
+            throw new IllegalArgumentException("rsMapper is null");
+        }
+
         this.daoClass = clazz;
         this.dataSource = dataSource;
         this.rsMapper = rsMapper;
-        if (clazz == null) {
-            throw new NullPointerException("clazz is null");
-        }
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             if (IdAnnotationService.hasAnnotation(field)) {
@@ -31,7 +38,7 @@ public class JdbcTemplate<T> {
                 return;
             }
         }
-        throw new IllegalArgumentException(clazz.getName() + " hasn't field with @Id");
+        throw new IllegalStateException(clazz.getName() + " hasn't field with @Id");
     }
 
     public long create(T objectDAO) throws SQLException {
@@ -109,8 +116,7 @@ public class JdbcTemplate<T> {
             identificationField.setAccessible(false);
         }
 
-        Optional<T> loadedObject = load(id);
-        if (loadedObject.isPresent()) {
+        if (id != 0) {
             update(objectDAO);
             return -1;
         } else {
@@ -134,16 +140,7 @@ public class JdbcTemplate<T> {
     private void insertValueToQuery(PreparedStatement pst, Field field, Object objectDAO, int index) throws SQLException {
         try {
             field.setAccessible(true);
-            Class<?> fieldType = field.getType();
-            if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
-                pst.setInt(index, (int) field.get(objectDAO));
-            } else if (fieldType.equals(long.class) || fieldType.equals(Long.class)) {
-                pst.setLong(index, (long) field.get(objectDAO));
-            } else if (fieldType.equals(String.class)) {
-                pst.setString(index, (String) field.get(objectDAO));
-            } else if (fieldType.equals(BigDecimal.class)) {
-                pst.setBigDecimal(index, (BigDecimal) field.get(objectDAO));
-            }
+            pst.setObject(index, field.get(objectDAO));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Can't access to field " + field.getName());
         } finally {

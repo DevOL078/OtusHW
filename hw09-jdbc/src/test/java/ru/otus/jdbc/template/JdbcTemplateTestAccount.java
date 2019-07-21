@@ -8,9 +8,9 @@ import ru.otus.jdbc.datasource.DataSourceH2;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Optional;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,6 +18,21 @@ class JdbcTemplateTestAccount {
 
     private static DataSource dataSource;
     private JdbcTemplate<Account> jdbcTemplate;
+    private Function<ResultSet, Account> rsMapper = resultSet -> {
+        try {
+            if (resultSet.next()) {
+                Account account = new Account(
+                        resultSet.getString("type"),
+                        resultSet.getBigDecimal("rest")
+                );
+                account.setNo(resultSet.getLong("no"));
+                return account;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    };
 
     @BeforeAll
     static void beforeAll() throws SQLException {
@@ -34,27 +49,22 @@ class JdbcTemplateTestAccount {
         jdbcTemplate = new JdbcTemplate<>(
                 Account.class,
                 dataSource,
-                resultSet -> {
-                    try {
-                        if (resultSet.next()) {
-                            Account account = new Account(
-                                    resultSet.getString("type"),
-                                    resultSet.getBigDecimal("rest")
-                            );
-                            account.setNo(resultSet.getLong("no"));
-                            return account;
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    return null;
-                });
+                rsMapper);
     }
 
     @Test
-    void testSave() throws SQLException {
+    void testCreate() throws SQLException {
         Account createdAccount = new Account("Easy", BigDecimal.valueOf(1000));
         long no = jdbcTemplate.create(createdAccount);
+        createdAccount.setNo(no);
+        Account loadedAccount = load(no).get();
+        assertEquals(createdAccount, loadedAccount);
+    }
+
+    @Test
+    void testLoad() throws SQLException {
+        Account createdAccount = new Account("Easy", BigDecimal.valueOf(1000));
+        long no = create(createdAccount);
         createdAccount.setNo(no);
         Account loadedAccount = jdbcTemplate.load(no).get();
         assertEquals(createdAccount, loadedAccount);
@@ -63,11 +73,11 @@ class JdbcTemplateTestAccount {
     @Test
     void testUpdate() throws SQLException {
         Account createdAccount = new Account("Easy", BigDecimal.valueOf(1000));
-        long no = jdbcTemplate.create(createdAccount);
+        long no = create(createdAccount);
         createdAccount.setNo(no);
         createdAccount.setType("Hard");
         jdbcTemplate.update(createdAccount);
-        Account loadedAccount = jdbcTemplate.load(createdAccount.getNo()).get();
+        Account loadedAccount = load(createdAccount.getNo()).get();
         assertEquals(createdAccount, loadedAccount);
     }
 
@@ -80,7 +90,7 @@ class JdbcTemplateTestAccount {
         createdAccount.setNo(no);
 
         //Load user for checking
-        Account loadedAccount = jdbcTemplate.load(no).get();
+        Account loadedAccount = load(no).get();
         assertEquals(createdAccount, loadedAccount);
 
         //Change user and save
@@ -89,8 +99,39 @@ class JdbcTemplateTestAccount {
         assertEquals(-1, newNo);
 
         //Load updated user
-        Account updatedAccount = jdbcTemplate.load(loadedAccount.getNo()).get();
+        Account updatedAccount = load(loadedAccount.getNo()).get();
         assertEquals(loadedAccount, updatedAccount);
+    }
+
+    private Optional<Account> load(long no) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement pst = connection.prepareStatement(
+                    "select * from account where no = ?"
+            )) {
+                pst.setLong(1, no);
+                try (ResultSet rs = pst.executeQuery()) {
+                    return Optional.ofNullable(rsMapper.apply(rs));
+                }
+            }
+        }
+    }
+
+    private long create(Account account) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement pst = connection.prepareStatement(
+                    "insert into account (type, rest) values (?, ?)",
+                    Statement.RETURN_GENERATED_KEYS
+            )) {
+                pst.setString(1, account.getType());
+                pst.setBigDecimal(2, account.getRest());
+                pst.executeUpdate();
+                connection.commit();
+                try (ResultSet rs = pst.getGeneratedKeys()) {
+                    rs.next();
+                    return rs.getLong(1);
+                }
+            }
+        }
     }
 
 }
