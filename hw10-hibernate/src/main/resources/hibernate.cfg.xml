@@ -9,7 +9,7 @@
 
         <property name="hibernate.connection.url">jdbc:h2:mem:testDB;DB_CLOSE_DELAY=-1</property>
         <property name="hibernate.connection.autocommit">false</property>
-        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.show_sql">false</property>
         <property name="hibernate.hbm2ddl.auto">create</property>
 
     </session-factory>
