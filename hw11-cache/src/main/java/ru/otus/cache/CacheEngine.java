@@ -1,10 +1,12 @@
 package ru.otus.cache;
 
+import java.util.Optional;
+
 public interface CacheEngine<K, V> {
 
-    void put(K key, SmartValue<V> element);
+    void put(K key, V element);
 
-    SmartValue<V> get(K key);
+    Optional<V> get(K key);
 
     int getHitCount();
 

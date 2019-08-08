@@ -3,10 +3,11 @@ package ru.otus.hibernate.service;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.otus.cache.CacheEngine;
-import ru.otus.cache.SmartValue;
 import ru.otus.hibernate.dao.User;
 
-public class UserServiceWithCache {
+import java.util.Optional;
+
+public class UserServiceWithCache implements DBService<User> {
 
     private final SessionFactory sessionFactory;
     private final CacheEngine<Long, User> cacheEngine;
@@ -25,18 +26,18 @@ public class UserServiceWithCache {
             session.getTransaction().commit();
         }
 
-        cacheEngine.put(user.getId(), new SmartValue<>(user));
+        cacheEngine.put(user.getId(), user);
     }
 
     public User get(long id) {
-        SmartValue<User> userSmartValue = cacheEngine.get(id);
-        if(userSmartValue != null) {
-            return userSmartValue.getValue();
+        Optional<User> optionalUser = cacheEngine.get(id);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
         } else {
             try (Session session = sessionFactory.openSession()) {
                 User userFromDB = session.get(User.class, id);
-                if(userFromDB != null) {
-                    cacheEngine.put(id, new SmartValue<>(userFromDB));
+                if (userFromDB != null) {
+                    cacheEngine.put(id, userFromDB);
                 }
                 return userFromDB;
             }

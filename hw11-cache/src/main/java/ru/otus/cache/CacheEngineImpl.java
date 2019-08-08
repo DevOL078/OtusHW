@@ -1,11 +1,9 @@
 package ru.otus.cache;
 
 import java.lang.ref.SoftReference;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
 
@@ -31,36 +29,41 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
 
 
     @Override
-    public SmartValue<V> get(K key) {
+    public Optional<V> get(K key) {
         SoftReference<SmartValue<V>> smartValueSoftReference = elements.get(key);
-        SmartValue<V> smartValue = null;
         if (smartValueSoftReference != null) {
             hit++;
-            smartValue = smartValueSoftReference.get();
+            SmartValue<V> smartValue = smartValueSoftReference.get();
             if (smartValue != null) {
                 smartValue.setAccessed();
+                return Optional.of(smartValue.getValue());
             }
         } else {
             miss++;
         }
-        return smartValue;
+        return Optional.empty();
     }
 
     @Override
-    public void put(K key, SmartValue<V> element) {
+    public void put(K key, V element) {
         if (elements.size() == maxElements) {
-            K firstKey = elements.keySet().iterator().next();
-            elements.remove(firstKey);
+            List<Map.Entry<K, SoftReference<SmartValue<V>>>> sortedEntries = elements.entrySet().stream().sorted((a, b) -> {
+                long lastA = Objects.requireNonNull(a.getValue().get()).getLastAccessTime();
+                long lastB = Objects.requireNonNull(b.getValue().get()).getLastAccessTime();
+                return Long.compare(lastA, lastB);
+            }).collect(Collectors.toList());
+
+            elements.remove(sortedEntries.get(0).getKey());
         }
 
-        elements.put(key, new SoftReference<>(element));
+        elements.put(key, new SoftReference<>(new SmartValue<>(element)));
 
         if (!isEternal) {
             if (lifeTimeMs != 0) {
-                TimerTask lifeTimerTask = getTimerTask(key, lifeElement -> lifeElement.getCreationTime() +  lifeTimeMs);
+                TimerTask lifeTimerTask = getTimerTask(key, lifeElement -> lifeElement.getCreationTime() + lifeTimeMs);
                 timer.schedule(lifeTimerTask, lifeTimeMs);
             }
-            if(idleTimeMs != 0) {
+            if (idleTimeMs != 0) {
                 TimerTask idleTimerTask = getTimerTask(key, idleElement -> idleElement.getLastAccessTime() + idleTimeMs);
                 timer.schedule(idleTimerTask, idleTimeMs, idleTimeMs);
             }
@@ -87,10 +90,10 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
             @Override
             public void run() {
                 SoftReference<SmartValue<V>> smartValueSoftReference = elements.get(key);
-                if(smartValueSoftReference == null ||
+                if (smartValueSoftReference == null ||
                         smartValueSoftReference.get() == null ||
                         isT1BeforeT2(timeFunction.apply(smartValueSoftReference.get()),
-                            System.currentTimeMillis())) {
+                                System.currentTimeMillis())) {
                     elements.remove(key);
                     this.cancel();
                 }

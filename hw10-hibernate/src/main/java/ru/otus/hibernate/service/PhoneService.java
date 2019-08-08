@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.otus.hibernate.dao.PhoneDataSet;
 
-public class PhoneService {
+public class PhoneService implements DBService<PhoneDataSet> {
 
     private final SessionFactory sessionFactory;
 

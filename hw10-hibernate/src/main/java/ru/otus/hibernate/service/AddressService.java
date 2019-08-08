@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.otus.hibernate.dao.AddressDataSet;
 
-public class AddressService {
+public class AddressService implements DBService<AddressDataSet> {
 
     private final SessionFactory sessionFactory;
 

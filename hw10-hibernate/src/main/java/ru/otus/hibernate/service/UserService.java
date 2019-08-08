@@ -4,7 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.otus.hibernate.dao.User;
 
-public class UserService {
+public class UserService implements DBService<User> {
 
     private final SessionFactory sessionFactory;
 
