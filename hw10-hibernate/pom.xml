@@ -49,6 +49,12 @@
             <version>2019-03-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>ru.otus</groupId>
+            <artifactId>hw12-webserver</artifactId>
+            <version>2019-03-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

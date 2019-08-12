@@ -5,6 +5,11 @@ import org.hibernate.SessionFactory;
 import ru.otus.cache.CacheEngine;
 import ru.otus.hibernate.dao.User;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
 
 public class UserServiceWithCache implements DBService<User> {
@@ -41,6 +46,19 @@ public class UserServiceWithCache implements DBService<User> {
                 }
                 return userFromDB;
             }
+        }
+    }
+
+    @Override
+    public List<User> getAll() {
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+            Root<User> root = criteriaQuery.from(User.class);
+            CriteriaQuery<User> all = criteriaQuery.select(root);
+
+            TypedQuery<User> allQuery = session.createQuery(all);
+            return allQuery.getResultList();
         }
     }
 
