@@ -1,4 +1,4 @@
-package ru.otus.hibernate.web.servlets;
+package ru.otus.webserver.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,8 +21,7 @@ import java.util.List;
 
 public class UsersController extends HttpServlet {
 
-    private DBService<User> userService = new UserServiceWithCache(HibernateConfig.getSessionFactory(),
-            new CacheEngineImpl<>(10, 100, 100, false));
+    private DBService<User> userService;
     private GsonBuilder builder = new GsonBuilder().registerTypeAdapter(AddressDataSet.class, new TypeAdapter<AddressDataSet>() {
         @Override
         public void write(JsonWriter jsonWriter, AddressDataSet addressDataSet) throws IOException {
@@ -34,6 +33,11 @@ public class UsersController extends HttpServlet {
             return null;
         }
     });
+
+    public UsersController(DBService<User> userService) {
+        super();
+        this.userService = userService;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

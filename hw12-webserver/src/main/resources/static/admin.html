@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <style type="text/css">
+        TABLE {
+            width: 500px;
+            border: 1px solid black;
+        }
+        TD, TH {
+            padding: 3px;
+        }
+        TH {
+            text-align: left;
+            background: black;
+            color: white;
+            border: 1px solid white;
+        }
+        TR {
+            border-bottom: 1px solid black;
+    }
+    </style>
+    <script>
+        function onCreate() {
+            var name = document.getElementById("nameInput").value;
+            var address = document.getElementById("addressInput").value;
+            var age = document.getElementById("ageInput").value;
+            var url = '/users' +
+                '?name=' + name +
+                '&address=' + address +
+                '&age=' + age;
+            fetch(url, {
+                method: 'POST'
+            }).then( function() {
+                document.getElementById("message").hidden = false;
+                setTimeout(function() {
+                    document.getElementById("message").hidden = true;
+                }, 5000);
+            });
+        }
+
+        function onUpdate() {
+            fetch('/users', {
+                method: 'GET'
+            }).then(function(response) {
+                return response.json();
+            }).then(function(dataSrc) {
+                var tableContent = document.getElementById("table-content");
+                var content = '';
+                var idx = 0;
+                dataSrc.forEach(function(el) {
+                    console.log(idx);
+                    console.log(el);
+                    content += '<tr>' +
+                        '<td>' + (++idx) + '</td>' +
+                        '<td>' + el.name + '</td>' +
+                        '<td>' + el.address + '</td>' +
+                        '<td>' +  el.age + '</td>' +
+                        '</tr>';
+                });
+                tableContent.innerHTML = content;
+            });
+        }
+
+        function onLoad() {
+            document.getElementById("message").hidden = true;
+        }
+    </script>
+</head>
+<body onload="onLoad()">
+    <div>Welcome!</div>
+    <div style="display: inline-block; width: 40%;">
+        <p style="background-color: yellow;">New user</p>
+        <p>Name <input id="nameInput" type="text" name="name"></p>
+        <p>Address <input id="addressInput" type="text" name="address"></p>
+        <p>Age <input id="ageInput" type="text" name="age"></p>
+        <p><input type="button" value="Create" onclick="onCreate()"></p>
+        <p id="message">Created!</p>
+    </div>
+    <div style="display: inline-block; vertical-align: top; width: 40%; margin-left: 10%;">
+        <p style="background-color: orange;">All users</p>
+        <p><input type="button" value="Update" onclick="onUpdate()"></p>
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody id="table-content">
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

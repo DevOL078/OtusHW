@@ -36,6 +36,12 @@
             <artifactId>jetty-webapp</artifactId>
             <version>${jetty.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ru.otus</groupId>
+            <artifactId>hw10-hibernate</artifactId>
+            <version>2019-03-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
