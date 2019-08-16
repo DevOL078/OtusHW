@@ -2,15 +2,10 @@ package ru.otus.webserver.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
-import ru.otus.cache.CacheEngineImpl;
-import ru.otus.hibernate.config.HibernateConfig;
 import ru.otus.hibernate.dao.AddressDataSet;
 import ru.otus.hibernate.dao.User;
 import ru.otus.hibernate.service.DBService;
-import ru.otus.hibernate.service.UserServiceWithCache;
+import ru.otus.webserver.util.AddressAdapter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,21 +17,12 @@ import java.util.List;
 public class UsersController extends HttpServlet {
 
     private DBService<User> userService;
-    private GsonBuilder builder = new GsonBuilder().registerTypeAdapter(AddressDataSet.class, new TypeAdapter<AddressDataSet>() {
-        @Override
-        public void write(JsonWriter jsonWriter, AddressDataSet addressDataSet) throws IOException {
-            jsonWriter.value(addressDataSet != null ? addressDataSet.getStreet() : "null");
-        }
-
-        @Override
-        public AddressDataSet read(JsonReader jsonReader) {
-            return null;
-        }
-    });
+    private GsonBuilder builder;
 
     public UsersController(DBService<User> userService) {
         super();
         this.userService = userService;
+        this.builder = new GsonBuilder().registerTypeAdapter(AddressDataSet.class, new AddressAdapter());
     }
 
     @Override
