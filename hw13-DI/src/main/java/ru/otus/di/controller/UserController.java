@@ -31,11 +31,8 @@ public class UserController {
     public String addUser(@RequestParam String name,
                           @RequestParam String address,
                           @RequestParam int age) {
-        User user = new User();
-        user.setName(name);
-        user.setAge(age);
-        AddressDataSet addressDataSet = new AddressDataSet();
-        addressDataSet.setStreet(address);
+        User user = new User(name, age);
+        AddressDataSet addressDataSet = new AddressDataSet(address);
         addressDataSet.setUser(user);
         user.setAddress(addressDataSet);
         userService.save(user);

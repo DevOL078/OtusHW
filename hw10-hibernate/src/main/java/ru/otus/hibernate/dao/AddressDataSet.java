@@ -16,6 +16,13 @@ public class AddressDataSet {
     @OneToOne
     private User user;
 
+    public AddressDataSet() {
+    }
+
+    public AddressDataSet(String street) {
+        this.street = street;
+    }
+
     public Long getId() {
         return id;
     }

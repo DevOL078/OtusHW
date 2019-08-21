@@ -31,17 +31,12 @@ public class DatabaseConfig {
     public DBService<User> userDBService() {
         return new UserServiceWithCache(
                 HibernateConfig.getSessionFactory(),
-                userServiceCache()
-        );
-    }
-
-    @Bean
-    public CacheEngine<Long, User> userServiceCache() {
-        return new CacheEngineImpl<>(
-                maxElements,
-                lifeTimeMs,
-                idleTimeMs,
-                isEternal
+                new CacheEngineImpl<>(
+                        maxElements,
+                        lifeTimeMs,
+                        idleTimeMs,
+                        isEternal
+                )
         );
     }
 
