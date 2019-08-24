@@ -8,7 +8,7 @@ public class Main {
     private static boolean isEnabledFirst = true;
     private static boolean isEnabledSecond = false;
     private static boolean direction = true;
-    private static boolean isFinish = false;
+    private static volatile boolean isFinish = false;
 
     private static synchronized void print() {
         String name = Thread.currentThread().getName();
