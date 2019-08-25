@@ -1,43 +1,48 @@
 package ru.otus.di.controller;
 
 import com.google.gson.GsonBuilder;
-import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
+import ru.otus.di.addressee.FrontendAddressee;
 import ru.otus.di.utils.AddressDataSetTypeAdapter;
 import ru.otus.di.utils.UserSerializationExclusionStrategy;
 import ru.otus.hibernate.dao.AddressDataSet;
 import ru.otus.hibernate.dao.User;
-import ru.otus.hibernate.service.DBService;
 
-@RestController("/users")
+@Controller
 public class UserController {
 
-    private DBService<User> userService;
     private GsonBuilder gsonBuilder;
 
-    public UserController(DBService<User> userService) {
-        this.userService = userService;
+    @Autowired
+    private FrontendAddressee frontendAddressee;
+
+    private Logger logger = LoggerFactory.getLogger("AppLogger");
+
+    public UserController() {
         this.gsonBuilder = new GsonBuilder()
                 .addSerializationExclusionStrategy(new UserSerializationExclusionStrategy())
                 .registerTypeAdapter(AddressDataSet.class, new AddressDataSetTypeAdapter());
     }
 
-    @GetMapping
-    public String getUsers() {
-        return gsonBuilder.create().toJson(userService.getAll());
+    @MessageMapping("/save")
+    public void save(String message) {
+        logger.info("receive new message");
+        System.out.println(message);
+        User user = gsonBuilder.create().fromJson(message, User.class);
+        if (user.getAddress() != null) {
+            user.getAddress().setUser(user);
+        }
+        frontendAddressee.save(user);
     }
 
-    @PostMapping
-    @ResponseBody
-    public String addUser(@RequestParam String name,
-                          @RequestParam String address,
-                          @RequestParam int age) {
-        User user = new User(name, age);
-        AddressDataSet addressDataSet = new AddressDataSet(address);
-        addressDataSet.setUser(user);
-        user.setAddress(addressDataSet);
-        userService.save(user);
-
-        return "New user: " + name;
+    @MessageMapping("/getAll")
+    public void getAll() {
+        logger.info("get all users");
+        frontendAddressee.getAll();
     }
 
 }

@@ -12,8 +12,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 @Configuration
-@ComponentScan({"ru.otus.di.controller",
-                "ru.otus.di.config"})
+@ComponentScan({"ru.otus.di"})
 @EnableWebMvc
 @PropertySource("application.properties")
 public class WebConfig {
@@ -28,7 +27,7 @@ public class WebConfig {
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(this.applicationContext);
-        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setPrefix("/static/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCacheable(true);
