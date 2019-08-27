@@ -24,34 +24,32 @@ public class MessageSystemConfig {
     @Autowired
     private SimpMessagingTemplate template;
 
-    @Bean
-    public MessageSystem messageSystem() {
-        return new MessageSystem();
-    }
+    private final MessageSystemContext messageSystemContext = new MessageSystemContext(new MessageSystem());
 
     @Bean
-    public MessageSystemContext messageSystemContext() {
-        MessageSystemContext messageSystemContext = new MessageSystemContext(messageSystem());
-        messageSystemContext.setFrontAddress(new Address("Frontend"));
-        messageSystemContext.setDbAddress(new Address("DB"));
+    public MessageSystemContext messageSystemContextBean() {
+        FrontendAddressee frontendAddressee = frontendAddressee();
+        DBAddressee dbAddressee = dbAddressee();
+        messageSystemContext.setFrontAddress(frontendAddressee.getAddress());
+        messageSystemContext.setDbAddress(dbAddressee.getAddress());
         messageSystemContext.getMessageSystem().start();
         return messageSystemContext;
     }
 
     @Bean
     public FrontendAddressee frontendAddressee() {
-        MessageSystemContext messageSystemContext = messageSystemContext();
+        Address frontendAddress = new Address("Frontend");
         FrontendUserAddressee frontendUserAddressee = new FrontendUserAddressee(
-                messageSystemContext, messageSystemContext.getFrontAddress(), webSocketSender());
+                messageSystemContext, frontendAddress, webSocketSender());
         frontendUserAddressee.init();
         return frontendUserAddressee;
     }
 
     @Bean
     public DBAddressee dbAddressee() {
-        MessageSystemContext messageSystemContext = messageSystemContext();
+        Address dbAddress = new Address("DB");
         DBUserAddressee dbUserAddressee = new DBUserAddressee(
-                messageSystemContext, messageSystemContext.getDbAddress(), userDBService);
+                messageSystemContext, dbAddress, userDBService);
         dbUserAddressee.init();
         return dbUserAddressee;
     }
