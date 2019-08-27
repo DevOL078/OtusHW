@@ -2,7 +2,6 @@ package ru.otus.di.addressee;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.otus.di.message.MsgUsers;
 import ru.otus.di.utils.MessageSystemContext;
 import ru.otus.hibernate.dao.User;
@@ -16,15 +15,14 @@ import java.util.List;
 public class DBUserAddressee implements DBAddressee {
     private final Address address;
     private final MessageSystemContext context;
+    private DBService<User> userDBService;
 
     private Logger logger = LoggerFactory.getLogger("AppLogger");
 
-    @Autowired
-    private DBService<User> userDBService;
-
-    public DBUserAddressee(MessageSystemContext context, Address address) {
+    public DBUserAddressee(MessageSystemContext context, Address address, DBService<User> userDBService) {
         this.context = context;
         this.address = address;
+        this.userDBService = userDBService;
     }
 
     @Override

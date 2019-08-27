@@ -2,7 +2,6 @@ package ru.otus.di.addressee;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import ru.otus.di.message.MsgGetAllUsers;
 import ru.otus.di.message.MsgSaveUser;
 import ru.otus.di.utils.MessageSystemContext;
@@ -17,15 +16,14 @@ import java.util.List;
 public class FrontendUserAddressee implements FrontendAddressee {
     private final Address address;
     private final MessageSystemContext context;
+    private WebSocketSender webSocketSender;
 
     private Logger logger = LoggerFactory.getLogger("AppLogger");
 
-    @Autowired
-    private WebSocketSender webSocketSender;
-
-    public FrontendUserAddressee(MessageSystemContext context, Address address) {
+    public FrontendUserAddressee(MessageSystemContext context, Address address, WebSocketSender webSocketSender) {
         this.context = context;
         this.address = address;
+        this.webSocketSender = webSocketSender;
     }
 
     @Override

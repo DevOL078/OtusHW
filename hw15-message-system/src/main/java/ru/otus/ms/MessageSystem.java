@@ -1,9 +1,9 @@
 package ru.otus.ms;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,8 +19,8 @@ public final class MessageSystem {
 
     public MessageSystem() {
         workers = new ArrayList<>();
-        messagesMap = new HashMap<>();
-        addresseeMap = new HashMap<>();
+        messagesMap = new ConcurrentHashMap<>();
+        addresseeMap = new ConcurrentHashMap<>();
     }
 
     public void addAddressee(Addressee addressee) {
@@ -45,6 +45,9 @@ public final class MessageSystem {
                         } catch (InterruptedException e) {
                             logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
                             return;
+                        } catch (Exception e) {
+                            logger.log(Level.INFO, "Exception in " + name + ": " + e.getMessage());
+                            e.printStackTrace();
                         }
                     }
                 }

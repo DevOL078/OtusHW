@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
 import ru.otus.di.utils.AddressDataSetTypeAdapter;
 import ru.otus.di.utils.UserSerializationExclusionStrategy;
 import ru.otus.hibernate.dao.AddressDataSet;
@@ -14,17 +12,16 @@ import ru.otus.hibernate.dao.User;
 
 import java.util.List;
 
-@Component
 public class WebSocketSender {
 
     private GsonBuilder gsonBuilder;
+    private SimpMessagingTemplate template;
 
     private Logger logger = LoggerFactory.getLogger("AppLogger");
 
-    @Autowired
-    private SimpMessagingTemplate template;
 
-    public WebSocketSender() {
+    public WebSocketSender(SimpMessagingTemplate template) {
+        this.template = template;
         this.gsonBuilder = new GsonBuilder()
                 .addSerializationExclusionStrategy(new UserSerializationExclusionStrategy())
                 .registerTypeAdapter(AddressDataSet.class, new AddressDataSetTypeAdapter());
