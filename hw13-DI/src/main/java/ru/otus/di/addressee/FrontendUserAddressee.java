@@ -16,7 +16,7 @@ import java.util.List;
 public class FrontendUserAddressee implements FrontendAddressee {
     private final Address address;
     private final MessageSystemContext context;
-    private WebSocketSender webSocketSender;
+    private final WebSocketSender webSocketSender;
 
     private Logger logger = LoggerFactory.getLogger("AppLogger");
 

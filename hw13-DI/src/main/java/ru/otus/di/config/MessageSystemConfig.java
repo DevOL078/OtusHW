@@ -24,12 +24,11 @@ public class MessageSystemConfig {
     @Autowired
     private SimpMessagingTemplate template;
 
-    private final MessageSystemContext messageSystemContext = new MessageSystemContext(new MessageSystem());
-
     @Bean
     public MessageSystemContext messageSystemContextBean() {
-        FrontendAddressee frontendAddressee = frontendAddressee();
-        DBAddressee dbAddressee = dbAddressee();
+        MessageSystemContext messageSystemContext = new MessageSystemContext(new MessageSystem());
+        FrontendAddressee frontendAddressee = frontendAddressee(messageSystemContext);
+        DBAddressee dbAddressee = dbAddressee(messageSystemContext);
         messageSystemContext.setFrontAddress(frontendAddressee.getAddress());
         messageSystemContext.setDbAddress(dbAddressee.getAddress());
         messageSystemContext.getMessageSystem().start();
@@ -37,7 +36,7 @@ public class MessageSystemConfig {
     }
 
     @Bean
-    public FrontendAddressee frontendAddressee() {
+    public FrontendAddressee frontendAddressee(MessageSystemContext messageSystemContext) {
         Address frontendAddress = new Address("Frontend");
         FrontendUserAddressee frontendUserAddressee = new FrontendUserAddressee(
                 messageSystemContext, frontendAddress, webSocketSender());
@@ -46,7 +45,7 @@ public class MessageSystemConfig {
     }
 
     @Bean
-    public DBAddressee dbAddressee() {
+    public DBAddressee dbAddressee(MessageSystemContext messageSystemContext) {
         Address dbAddress = new Address("DB");
         DBUserAddressee dbUserAddressee = new DBUserAddressee(
                 messageSystemContext, dbAddress, userDBService);
