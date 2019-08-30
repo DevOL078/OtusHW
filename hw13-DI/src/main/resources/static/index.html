@@ -29,8 +29,6 @@
     </style>
     <script>
 
-        var prefix = '/DIServer';
-
         let stompClient = null;
 
         function onCreate() {
@@ -61,7 +59,7 @@
 
 
         $(function () {
-            stompClient = Stomp.over(new SockJS(prefix + '/message-server'))
+            stompClient = Stomp.over(new SockJS('message-server'))
             stompClient.connect({}, (frame) => {
                 stompClient.subscribe('/topic/users', (data) => {
 
