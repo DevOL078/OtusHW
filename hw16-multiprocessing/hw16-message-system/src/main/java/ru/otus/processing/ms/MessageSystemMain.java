@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageSystemMain {
 
-    private final String FRONTEND_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-frontend\\target\\hw16-frontend-2019-03-SNAPSHOT-jar-with-dependencies.jar";
+    private final String FRONTEND_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-frontend\\target\\hw16-frontend-2019-03-SNAPSHOT.jar";
     private final int FRONTEND_START_DELAY_SEC = 5;
     private final String DB_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar";
     private final int DB_START_DELAY_SEC = 5;
