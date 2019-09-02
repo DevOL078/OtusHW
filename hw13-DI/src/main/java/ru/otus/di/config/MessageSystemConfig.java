@@ -3,6 +3,7 @@ package ru.otus.di.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ru.otus.di.addressee.DBAddressee;
 import ru.otus.di.addressee.DBUserAddressee;
@@ -24,19 +25,22 @@ public class MessageSystemConfig {
     @Autowired
     private SimpMessagingTemplate template;
 
+    private MessageSystemContext messageSystemContext = new MessageSystemContext(new MessageSystem());
+
     @Bean
-    public MessageSystemContext messageSystemContextBean() {
-        MessageSystemContext messageSystemContext = new MessageSystemContext(new MessageSystem());
-        FrontendAddressee frontendAddressee = frontendAddressee(messageSystemContext);
-        DBAddressee dbAddressee = dbAddressee(messageSystemContext);
+    @DependsOn({"frontend", "db"})
+    public MessageSystemContext messageSystemContextBean(
+            FrontendAddressee frontendAddressee,
+            DBAddressee dbAddressee
+    ) {
         messageSystemContext.setFrontAddress(frontendAddressee.getAddress());
         messageSystemContext.setDbAddress(dbAddressee.getAddress());
         messageSystemContext.getMessageSystem().start();
         return messageSystemContext;
     }
 
-    @Bean
-    public FrontendAddressee frontendAddressee(MessageSystemContext messageSystemContext) {
+    @Bean("frontend")
+    public FrontendAddressee frontendAddressee() {
         Address frontendAddress = new Address("Frontend");
         FrontendUserAddressee frontendUserAddressee = new FrontendUserAddressee(
                 messageSystemContext, frontendAddress, webSocketSender());
@@ -44,8 +48,8 @@ public class MessageSystemConfig {
         return frontendUserAddressee;
     }
 
-    @Bean
-    public DBAddressee dbAddressee(MessageSystemContext messageSystemContext) {
+    @Bean("db")
+    public DBAddressee dbAddressee() {
         Address dbAddress = new Address("DB");
         DBUserAddressee dbUserAddressee = new DBUserAddressee(
                 messageSystemContext, dbAddress, userDBService);

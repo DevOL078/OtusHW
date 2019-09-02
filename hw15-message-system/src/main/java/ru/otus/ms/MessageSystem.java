@@ -41,6 +41,7 @@ public final class MessageSystem {
                     while (true) {
                         try {
                             Message message = queue.take(); //Blocks
+                            System.out.println("New message: " + message.getFrom().getId() + ", " + message.getTo().getId());
                             message.exec(entry.getValue());
                         } catch (InterruptedException e) {
                             logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
