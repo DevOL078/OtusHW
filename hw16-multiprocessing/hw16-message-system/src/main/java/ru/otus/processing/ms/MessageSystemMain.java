@@ -1,6 +1,7 @@
 package ru.otus.processing.ms;
 
 import ru.otus.processing.ms.runner.ProcessRunnerImpl;
+import ru.otus.processing.ms.socket.SocketServer;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -14,15 +15,18 @@ public class MessageSystemMain {
     private final String DB_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar";
     private final int DB_START_DELAY_SEC = 5;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         new MessageSystemMain().start();
     }
 
-    private void start() {
+    private void start() throws IOException, InterruptedException {
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
         startFrontend(executorService);
         startDB(executorService);
+
+        SocketServer socketServer = new SocketServer();
+        socketServer.start();
     }
 
     private void startFrontend(ScheduledExecutorService executorService) {

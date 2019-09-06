@@ -10,8 +10,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 @EnableWebMvc
 @ComponentScan({
-        "ru.otus.processing.frontend.config",
-        "ru.otus.processing.frontend.controller"
+        "ru.otus.processing.frontend"
 })
 public class FrontendMain {
 
