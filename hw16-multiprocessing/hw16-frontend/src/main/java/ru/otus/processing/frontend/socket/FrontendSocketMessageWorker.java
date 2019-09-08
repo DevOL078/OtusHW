@@ -2,7 +2,6 @@ package ru.otus.processing.frontend.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import ru.otus.processing.ms.message.Message;
 import ru.otus.processing.ms.socket.SocketMessageWorker;
 
@@ -10,12 +9,12 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class FrontendSocketMessageWorker extends SocketMessageWorker {
-    private final Logger logger = LoggerFactory.getLogger(FrontendSocketMessageWorker.class);
+    private final Logger logger = LoggerFactory.getLogger("Frontend-Logger");
 
-    private static final String MS_ID = "MS";       //TODO придумать, как вынести в конфиг
-    private static final String SERVICE_ID = "Frontend";
+    private static final String MS_ADDRESS = "MS";       //TODO придумать, как вынести в конфиг
+    private static final String FRONTEND_ADDRESS = "Frontend";
 
-    public FrontendSocketMessageWorker(Socket socket) throws IOException {
+    public FrontendSocketMessageWorker(Socket socket) {
         super(socket);
         logger.info("Socket has been connected");
     }
@@ -25,8 +24,8 @@ public class FrontendSocketMessageWorker extends SocketMessageWorker {
         super.init();
 
         super.send(new Message(
-                SERVICE_ID,
-                MS_ID,
+                FRONTEND_ADDRESS,
+                MS_ADDRESS,
                 "service-id",
                 null
         ));

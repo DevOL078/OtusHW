@@ -28,6 +28,11 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.otus</groupId>
+            <artifactId>hw10-hibernate</artifactId>
+            <version>2019-03-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

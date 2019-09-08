@@ -9,12 +9,12 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class DBSocketMessageWorker extends SocketMessageWorker {
-    private final Logger logger = LoggerFactory.getLogger(DBSocketMessageWorker.class);
+    private final Logger logger = LoggerFactory.getLogger("DB-Logger");
 
-    private static final String MS_ID = "MS";
-    private static final String SERVICE_ID = "DB";
+    private static final String MS_ADDRESS = "MS";
+    private static final String DB_ADDRESS = "DB";
 
-    public DBSocketMessageWorker(Socket socket) throws IOException {
+    public DBSocketMessageWorker(Socket socket) {
         super(socket);
         logger.info("Socket has been connected");
     }
@@ -24,8 +24,8 @@ public class DBSocketMessageWorker extends SocketMessageWorker {
         super.init();
 
         super.send(new Message(
-                SERVICE_ID,
-                MS_ID,
+                DB_ADDRESS,
+                MS_ADDRESS,
                 "service-id",
                 null
         ));

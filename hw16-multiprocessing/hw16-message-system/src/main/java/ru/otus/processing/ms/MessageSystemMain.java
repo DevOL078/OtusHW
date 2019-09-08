@@ -12,7 +12,7 @@ public class MessageSystemMain {
 
     private final String FRONTEND_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-frontend\\target\\hw16-frontend-2019-03-SNAPSHOT.jar";
     private final int FRONTEND_START_DELAY_SEC = 5;
-    private final String DB_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar";
+    private final String DB_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar -port 8082";
     private final int DB_START_DELAY_SEC = 5;
 
     public static void main(String[] args) throws IOException, InterruptedException {

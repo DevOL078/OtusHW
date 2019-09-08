@@ -28,4 +28,9 @@ public class Message {
     public String getTo() {
         return to;
     }
+
+    @Override
+    public String toString() {
+        return String.format("{Message from = %s; to = %s; type = %s; message = %s", from, to, type, message);
+    }
 }

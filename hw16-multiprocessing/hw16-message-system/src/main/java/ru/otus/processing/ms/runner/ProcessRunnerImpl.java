@@ -60,6 +60,7 @@ public class ProcessRunnerImpl implements ProcessRunner {
                 String line;
                 while((line = bufferedReader.readLine()) !=  null){
                     out.append(type).append('>').append(line).append("\n");
+                    System.out.println(type + " > " + line + "\n");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

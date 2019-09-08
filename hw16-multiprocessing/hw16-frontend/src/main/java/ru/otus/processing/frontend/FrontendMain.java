@@ -14,7 +14,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 })
 public class FrontendMain {
 
-    private static final Logger logger = LoggerFactory.getLogger(FrontendMain.class);
+    private static final Logger logger = LoggerFactory.getLogger("Frontend-Logger");
 
     public static void main(String[] args) {
         logger.info("Hello from Frontend");
