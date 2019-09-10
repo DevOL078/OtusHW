@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.Optional;
+
 @SpringBootApplication
 @EnableWebMvc
 @ComponentScan({
@@ -14,12 +16,24 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 })
 public class FrontendMain {
 
-    private static final Logger logger = LoggerFactory.getLogger("Frontend-Logger");
+    private static final Logger logger = LoggerFactory.getLogger(FrontendMain.class);
+
+    private static Optional<String> configFileName;
 
     public static void main(String[] args) {
-        logger.info("Hello from Frontend");
+        logger.info("Start Frontend service");
+
+        if(args.length > 0) {
+            configFileName = Optional.of(args[0]);
+        } else {
+            configFileName = Optional.empty();
+        }
 
         SpringApplication.run(FrontendMain.class, args);
+    }
+
+    public static Optional<String> getConfigFileName() {
+        return configFileName;
     }
 
 }

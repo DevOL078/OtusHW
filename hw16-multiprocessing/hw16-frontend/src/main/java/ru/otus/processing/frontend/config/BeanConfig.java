@@ -15,15 +15,15 @@ import java.net.Socket;
 @Configuration
 public class BeanConfig {
 
-    private static final String MS_HOST = "localhost"; //TODO придумать, как вынести в конфиг
-    private static final int MS_PORT = 8080;
+    private final String msHost = FrontendConfigManager.getInstance().getStringConfig("ms.host");
+    private final int msPort = FrontendConfigManager.getInstance().getIntConfig("ms.port");
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Bean
     public SocketMessageWorker frontendSocketMessageWorker() throws IOException {
-        SocketMessageWorker socketMessageWorker = new FrontendSocketMessageWorker(new Socket(MS_HOST, MS_PORT));
+        SocketMessageWorker socketMessageWorker = new FrontendSocketMessageWorker(new Socket(msHost, msPort));
         socketMessageWorker.init();
         return socketMessageWorker;
     }

@@ -9,7 +9,7 @@ import ru.otus.processing.ms.dto.UserDto;
 import java.util.List;
 
 public class WebSocketSender {
-    private static final Logger logger = LoggerFactory.getLogger("Frontend-Logger");
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketSender.class);
 
     private final SimpMessagingTemplate template;
 

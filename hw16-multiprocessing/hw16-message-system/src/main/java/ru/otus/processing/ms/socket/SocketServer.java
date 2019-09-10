@@ -2,6 +2,7 @@ package ru.otus.processing.ms.socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.processing.ms.config.MSConfigManager;
 import ru.otus.processing.ms.message.Message;
 import ru.otus.processing.ms.message.MessageWorker;
 
@@ -14,8 +15,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SocketServer {
-    private static final int PORT = 8080;   //TODO придумать, как вынести в конфиг
-    private static final int THREADS_COUNT = 4;
+    private static final int PORT = 8080;
+    private static final int THREADS_COUNT = MSConfigManager.getInstance().getIntConfig("socket-server.threads-count");
     private final Logger logger = LoggerFactory.getLogger(SocketServer.class);
 
     private final ExecutorService executorService;

@@ -15,7 +15,7 @@ import java.util.List;
 @RestController("/users")
 public class UserController {
 
-    private static final Logger logger = LoggerFactory.getLogger("Frontend-Logger");
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final FrontendProcessor frontendProcessor;
     private final WebSocketSender webSocketSender;

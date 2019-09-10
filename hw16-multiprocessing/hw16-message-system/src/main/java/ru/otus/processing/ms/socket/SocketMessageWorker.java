@@ -80,7 +80,7 @@ public class SocketMessageWorker implements MessageWorker {
                 if(inputLine.isEmpty()) {       //if this is the end of message
                     String json = stringBuilder.toString();
                     Message message = new Gson().fromJson(json, Message.class);
-                    logger.info("Receive message via socket from " + message.getFrom());
+                    logger.info("Receive message via socket from " + message.getFrom() + " : " + message);
                     input.add(message);
                     stringBuilder = new StringBuilder();
                 }

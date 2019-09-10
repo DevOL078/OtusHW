@@ -10,10 +10,15 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageSystemMain {
 
-    private final String FRONTEND_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-frontend\\target\\hw16-frontend-2019-03-SNAPSHOT.jar";
-    private final int FRONTEND_START_DELAY_SEC = 5;
-    private final String DB_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar -port 8082";
-    private final int DB_START_DELAY_SEC = 5;
+    private final String FRONTEND1_START_COMMAND = "java -Dserver.port=8081 -jar hw16-multiprocessing\\hw16-frontend\\target\\hw16-frontend-2019-03-SNAPSHOT.jar frontend1.conf";
+    private final int FRONTEND1_START_DELAY_SEC = 5;
+    private final String FRONTEND2_START_COMMAND = "java -Dserver.port=8082 -jar hw16-multiprocessing\\hw16-frontend\\target\\hw16-frontend-2019-03-SNAPSHOT.jar frontend2.conf";
+    private final int FRONTEND2_START_DELAY_SEC = 5;
+
+    private final String DB1_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar database1.conf";
+    private final int DB1_START_DELAY_SEC = 10;
+    private final String DB2_START_COMMAND = "java -jar hw16-multiprocessing\\hw16-db\\target\\hw16-db-2019-03-SNAPSHOT-jar-with-dependencies.jar database2.conf";
+    private final int DB2_START_DELAY_SEC = 10;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new MessageSystemMain().start();
@@ -22,31 +27,23 @@ public class MessageSystemMain {
     private void start() throws IOException, InterruptedException {
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
-        startFrontend(executorService);
-        startDB(executorService);
+        startService(executorService, FRONTEND1_START_COMMAND, FRONTEND1_START_DELAY_SEC);
+        startService(executorService, FRONTEND2_START_COMMAND, FRONTEND2_START_DELAY_SEC);
+        startService(executorService, DB1_START_COMMAND, DB1_START_DELAY_SEC);
+        startService(executorService, DB2_START_COMMAND, DB2_START_DELAY_SEC);
 
         SocketServer socketServer = new SocketServer();
         socketServer.start();
     }
 
-    private void startFrontend(ScheduledExecutorService executorService) {
+    private void startService(ScheduledExecutorService executorService, String startCommand, int delaySec) {
         executorService.schedule(() -> {
             try {
-                new ProcessRunnerImpl().start(FRONTEND_START_COMMAND);
+                new ProcessRunnerImpl().start(startCommand);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }, FRONTEND_START_DELAY_SEC, TimeUnit.SECONDS);
-    }
-
-    private void startDB(ScheduledExecutorService executorService) {
-        executorService.schedule(() -> {
-            try {
-                new ProcessRunnerImpl().start(DB_START_COMMAND);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }, DB_START_DELAY_SEC, TimeUnit.SECONDS);
+        }, delaySec, TimeUnit.SECONDS);
     }
 
 }

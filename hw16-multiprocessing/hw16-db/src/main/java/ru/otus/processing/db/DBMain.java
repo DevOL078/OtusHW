@@ -7,32 +7,49 @@ import ru.otus.hibernate.config.HibernateConfig;
 import ru.otus.hibernate.dao.User;
 import ru.otus.hibernate.service.DBService;
 import ru.otus.hibernate.service.UserServiceWithCache;
+import ru.otus.processing.db.config.DBConfigManager;
 import ru.otus.processing.db.processor.DBProcessor;
 import ru.otus.processing.db.socket.DBSocketMessageWorker;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Optional;
 
 public class DBMain {
 
-    private static Logger logger = LoggerFactory.getLogger("DB-Logger");
+    private static Logger logger = LoggerFactory.getLogger(DBMain.class);
 
-    private static final String MS_HOST = "localhost";
-    private static final int MS_PORT = 8080;
+    private static Optional<String> configFileName;
 
     public static void main(String[] args) throws IOException {
-        logger.info("Hello from DB");
-        DBSocketMessageWorker dbSocketMessageWorker = new DBSocketMessageWorker(new Socket(MS_HOST, MS_PORT));
+        logger.info("Start DB service");
+
+        if(args.length > 0) {
+            configFileName = Optional.of(args[0]);
+        } else {
+            configFileName = Optional.empty();
+        }
+
+        String msHost = DBConfigManager.getInstance().getStringConfig("ms.host");
+        int msPort = DBConfigManager.getInstance().getIntConfig("ms.port");
+        DBSocketMessageWorker dbSocketMessageWorker = new DBSocketMessageWorker(new Socket(msHost, msPort));
         dbSocketMessageWorker.init();
+
+        int cacheMaxElements = DBConfigManager.getInstance().getIntConfig("db.cache.maxElements");
+        int cacheLifeTimeMs = DBConfigManager.getInstance().getIntConfig("db.cache.lifeTimeMs");
+        int cacheIdleTimeMs = DBConfigManager.getInstance().getIntConfig("db.cache.idleTimeMs");
+        boolean cacheIsEternal = DBConfigManager.getInstance().getBooleanConfig("db.cache.isEternal");
 
         DBService<User> dbService = new UserServiceWithCache(
                 HibernateConfig.getSessionFactory(),
-                new CacheEngineImpl<>(10, 100, 100, false)
+                new CacheEngineImpl<>(cacheMaxElements, cacheLifeTimeMs, cacheIdleTimeMs, cacheIsEternal)
         );
 
         DBProcessor dbProcessor = new DBProcessor(dbService, dbSocketMessageWorker);
         dbProcessor.init();
     }
 
-
+    public static Optional<String> getConfigFileName() {
+        return configFileName;
+    }
 }
