@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 public class DBProcessor {
     private final Logger logger = LoggerFactory.getLogger(DBProcessor.class);
 
-    private final String dbAddress = DBConfigManager.getInstance().getStringConfig("db.address");
-    private final int threadCount = DBConfigManager.getInstance().getIntConfig("db.processor.thread-count");
+    private final String dbAddress;
 
     private final DBService<User> dbService;
     private final SocketMessageWorker worker;
@@ -28,8 +27,10 @@ public class DBProcessor {
 
 
     public DBProcessor(DBService<User> dbService, SocketMessageWorker worker) {
+        this.dbAddress = DBConfigManager.getInstance().getServiceId();
         this.dbService = dbService;
         this.worker = worker;
+        int threadCount = DBConfigManager.getInstance().getIntConfig("db.processor.thread-count");
         this.executorService = Executors.newFixedThreadPool(threadCount);
     }
 

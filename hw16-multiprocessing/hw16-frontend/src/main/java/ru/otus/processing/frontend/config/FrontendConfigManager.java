@@ -2,25 +2,25 @@ package ru.otus.processing.frontend.config;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.springframework.stereotype.Service;
 import ru.otus.processing.frontend.FrontendMain;
 
+import java.util.UUID;
+
+@Service
 public class FrontendConfigManager {
-    private static volatile FrontendConfigManager instance;
 
     private Config config;
+    private final String CONFIG_FILE_NAME = "frontend.conf";
+    private final String serviceId;
 
-    private FrontendConfigManager() {
-        String configFileName = FrontendMain.getConfigFileName().orElse("frontend1.conf");
-        config = ConfigFactory.load(configFileName);
+    public FrontendConfigManager() {
+        serviceId = FrontendMain.getServiceId().orElse(UUID.randomUUID().toString());
+        config = ConfigFactory.load(CONFIG_FILE_NAME);
     }
 
-    public static FrontendConfigManager getInstance() {
-        if(instance == null) {
-            synchronized (FrontendConfigManager.class) {
-                instance = new FrontendConfigManager();
-            }
-        }
-        return instance;
+    public String getServiceId() {
+        return serviceId;
     }
 
     public String getStringConfig(String configName) {
@@ -34,7 +34,6 @@ public class FrontendConfigManager {
     public boolean getBooleanConfig(String configName) {
         return config.getBoolean(configName);
     }
-
 
 
 }

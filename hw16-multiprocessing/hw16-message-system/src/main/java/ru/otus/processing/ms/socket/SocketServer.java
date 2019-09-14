@@ -9,10 +9,13 @@ import ru.otus.processing.ms.message.MessageWorker;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class SocketServer {
     private static final int PORT = 8080;
@@ -43,7 +46,12 @@ public class SocketServer {
         while(!executorService.isShutdown()) {
             Message message = worker.take();
             logger.info("Receive new message from " + message.getFrom() + " to " + message.getTo());
-            MessageWorker workerTo = workers.get(message.getTo());
+            MessageWorker workerTo;
+            if(message.getTo().equals("DB")) {
+                workerTo = getDBWorkerRandom();
+            } else {
+                workerTo = workers.get(message.getTo());
+            }
             workerTo.send(message);
             logger.info("Message has been sent to " + message.getTo());
         }
@@ -72,5 +80,15 @@ public class SocketServer {
             throw new IllegalStateException("Expected message with type service-id, but actual is " + message.getType());
         }
         return message.getFrom();
+    }
+
+    private MessageWorker getDBWorkerRandom() {
+        List<Map.Entry<String, MessageWorker>> dbWorkers = workers.entrySet().stream()
+                .filter(e -> e.getKey().startsWith("DB"))
+                .collect(Collectors.toList());
+
+        Random rnd = new Random();
+        int randomIndex = rnd.nextInt(dbWorkers.size());
+        return dbWorkers.get(randomIndex).getValue();
     }
 }

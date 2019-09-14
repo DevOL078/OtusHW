@@ -4,8 +4,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 public class MSConfigManager {
-    private static volatile MSConfigManager instance;
-
+    private static MSConfigManager instance = new MSConfigManager();
     private final String CONFIG_FILE_NAME = "message-system.conf";
     private final Config config;
 
@@ -14,11 +13,6 @@ public class MSConfigManager {
     }
 
     public static MSConfigManager getInstance() {
-        if(instance == null) {
-            synchronized (MSConfigManager.class) {
-                instance = new MSConfigManager();
-            }
-        }
         return instance;
     }
 

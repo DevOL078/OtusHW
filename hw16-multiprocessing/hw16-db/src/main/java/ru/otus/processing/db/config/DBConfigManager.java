@@ -4,23 +4,25 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import ru.otus.processing.db.DBMain;
 
-public class DBConfigManager {
-    private static volatile DBConfigManager instance;
+import java.util.UUID;
 
-    private Config config;
+public class DBConfigManager {
+    private static DBConfigManager instance = new DBConfigManager();
+    private final String serviceId;
+    private final String CONFIG_FILE_NAME = "database.conf";
+    private final Config config;
 
     private DBConfigManager() {
-        String configFileName = DBMain.getConfigFileName().orElse("database1.conf");
-        config = ConfigFactory.load(configFileName);
+        serviceId = DBMain.getServiceId().orElse(UUID.randomUUID().toString());
+        config = ConfigFactory.load(CONFIG_FILE_NAME);
     }
 
     public static DBConfigManager getInstance() {
-        if(instance == null) {
-            synchronized (DBConfigManager.class) {
-                instance = new DBConfigManager();
-            }
-        }
         return instance;
+    }
+
+    public String getServiceId() {
+        return serviceId;
     }
 
     public String getStringConfig(String configName) {

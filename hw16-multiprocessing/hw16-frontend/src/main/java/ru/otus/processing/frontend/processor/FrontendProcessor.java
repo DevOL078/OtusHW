@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import ru.otus.processing.frontend.config.FrontendConfigManager;
 import ru.otus.processing.ms.dto.UserDto;
 import ru.otus.processing.ms.message.Message;
@@ -12,23 +13,23 @@ import ru.otus.processing.ms.socket.SocketMessageWorker;
 import java.lang.reflect.Type;
 import java.util.List;
 
+@Component
 public class FrontendProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(FrontendProcessor.class);
 
-    private final String frontendAddress = FrontendConfigManager.getInstance().getStringConfig("frontend.address");
-    private final String dbAddress = FrontendConfigManager.getInstance().getStringConfig("db.address");
-
+    private final String frontendAddress;
     private final SocketMessageWorker worker;
 
-    public FrontendProcessor(SocketMessageWorker worker) {
+    public FrontendProcessor(SocketMessageWorker worker, FrontendConfigManager frontendConfigManager) {
         this.worker = worker;
+        this.frontendAddress = frontendConfigManager.getServiceId();
     }
 
     public List<UserDto> getAll() throws InterruptedException {
         Message sendingMsg = new Message(
                 frontendAddress,
-                dbAddress,
+                "DB",
                 "getAll",
                 null
         );
@@ -56,7 +57,7 @@ public class FrontendProcessor {
         Gson gson = new Gson();
         Message message = new Message(
                 frontendAddress,
-                dbAddress,
+                "DB",
                 "save",
                 gson.toJson(userDto)
         );

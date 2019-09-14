@@ -3,11 +3,11 @@ package ru.otus.processing.db;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.cache.CacheEngineImpl;
-import ru.otus.hibernate.config.HibernateConfig;
 import ru.otus.hibernate.dao.User;
 import ru.otus.hibernate.service.DBService;
 import ru.otus.hibernate.service.UserServiceWithCache;
 import ru.otus.processing.db.config.DBConfigManager;
+import ru.otus.processing.db.config.HibernateConfig;
 import ru.otus.processing.db.processor.DBProcessor;
 import ru.otus.processing.db.socket.DBSocketMessageWorker;
 
@@ -19,15 +19,15 @@ public class DBMain {
 
     private static Logger logger = LoggerFactory.getLogger(DBMain.class);
 
-    private static Optional<String> configFileName;
+    private static Optional<String> serviceId;
 
     public static void main(String[] args) throws IOException {
         logger.info("Start DB service");
 
         if(args.length > 0) {
-            configFileName = Optional.of(args[0]);
+            serviceId = Optional.of(args[0]);
         } else {
-            configFileName = Optional.empty();
+            serviceId = Optional.empty();
         }
 
         String msHost = DBConfigManager.getInstance().getStringConfig("ms.host");
@@ -49,7 +49,7 @@ public class DBMain {
         dbProcessor.init();
     }
 
-    public static Optional<String> getConfigFileName() {
-        return configFileName;
+    public static Optional<String> getServiceId() {
+        return serviceId;
     }
 }

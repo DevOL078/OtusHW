@@ -78,6 +78,7 @@ public class SocketMessageWorker implements MessageWorker {
             while((inputLine = reader.readLine()) != null) {
                 stringBuilder.append(inputLine);
                 if(inputLine.isEmpty()) {       //if this is the end of message
+                    System.out.println(inputLine);
                     String json = stringBuilder.toString();
                     Message message = new Gson().fromJson(json, Message.class);
                     logger.info("Receive message via socket from " + message.getFrom() + " : " + message);

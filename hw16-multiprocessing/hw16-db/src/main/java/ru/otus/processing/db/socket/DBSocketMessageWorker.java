@@ -11,12 +11,15 @@ import java.net.Socket;
 public class DBSocketMessageWorker extends SocketMessageWorker {
     private final Logger logger = LoggerFactory.getLogger(DBSocketMessageWorker.class);
 
-    private final String msAddress = DBConfigManager.getInstance().getStringConfig("ms.address");
-    private final String dbAddress = DBConfigManager.getInstance().getStringConfig("db.address");
+    private final String msAddress;
+    private final String dbAddress;
 
     public DBSocketMessageWorker(Socket socket) {
         super(socket);
         logger.info("Socket has been connected");
+
+        this.msAddress = DBConfigManager.getInstance().getStringConfig("ms.address");
+        this.dbAddress = DBConfigManager.getInstance().getServiceId();
     }
 
     @Override
