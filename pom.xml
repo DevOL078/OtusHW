@@ -25,6 +25,7 @@
         <module>hw13-DI</module>
         <module>hw14-numbers</module>
         <module>hw15-message-system</module>
+        <module>salamandra-storage</module>
     </modules>
 
     <properties>
