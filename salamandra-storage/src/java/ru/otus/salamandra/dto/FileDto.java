@@ -1,33 +1,37 @@
 package ru.otus.salamandra.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileDto {
     private final byte[] content;
-    private final String fileName;
-    private final List<String> subDirs;
+    private final List<String> relativePath;
     private final int fileSize;
+    private final LocalDateTime lastModifiedTime;
 
-    public FileDto(List<String> subDirs, String fileName, int fileSize, byte[] content) {
+    public FileDto(List<String> relativePath,
+                   int fileSize,
+                   byte[] content,
+                   LocalDateTime lastModifiedTime) {
         this.content = content;
-        this.subDirs = subDirs;
-        this.fileName = fileName;
+        this.relativePath = relativePath;
         this.fileSize = fileSize;
-    }
-
-    public List<String> getSubDirs() {
-        return subDirs;
+        this.lastModifiedTime = lastModifiedTime;
     }
 
     public byte[] getContent() {
         return content;
     }
 
-    public String getFileName() {
-        return fileName;
+    public List<String> getRelativePath() {
+        return relativePath;
     }
 
     public int getFileSize() {
         return fileSize;
+    }
+
+    public LocalDateTime getLastModifiedTime() {
+        return lastModifiedTime;
     }
 }

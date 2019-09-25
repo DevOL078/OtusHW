@@ -19,6 +19,9 @@ public class File {
     private int fileSize;
 
     @Column(nullable = false)
+    private LocalDateTime lastModifiedTime;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)
@@ -28,13 +31,18 @@ public class File {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public File(){}
+
     public File(String fileName,
                 int fileSize,
+                LocalDateTime lastModifiedTime,
                 User user) {
         this.fileName = fileName;
         this.fileSize = fileSize;
+        this.lastModifiedTime = lastModifiedTime;
         this.user = user;
     }
+
 
     public Long getId() {
         return id;
@@ -58,6 +66,10 @@ public class File {
 
     public User getUser() {
         return user;
+    }
+
+    public LocalDateTime getLastModifiedTime() {
+        return lastModifiedTime;
     }
 
     public void setId(Long id) {
@@ -84,4 +96,13 @@ public class File {
         this.user = user;
     }
 
+    public void setLastModifiedTime(LocalDateTime lastModifiedTime) {
+        this.lastModifiedTime = lastModifiedTime;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("File [id = %d, fileName = %s, fileSize = %d, lastModifiedTime = %s, createdAt = %s, updatedAt = %s]",
+                id, fileName, fileSize, lastModifiedTime, createdAt, updatedAt);
+    }
 }

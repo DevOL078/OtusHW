@@ -32,6 +32,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<File> files = new ArrayList<>();
 
+    public User(){}
+
     public User(String login,
                 String encryptedPassword,
                 String storageDir) {

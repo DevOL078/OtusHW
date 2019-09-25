@@ -9,7 +9,7 @@ public class FileRoute extends RouteBuilder {
 
     @Override
     public void configure() {
-        from("rabbitmq://localhost/sync")
+        from("rabbitmq://localhost/update")
                 .log("body")
                 .bean(FileProcessor.class)
                 .end();
