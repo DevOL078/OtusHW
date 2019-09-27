@@ -2,12 +2,18 @@ package ru.otus.salamandra.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class SyncRequestDto {
 
     private List<FileProperties> filePropertiesList = new ArrayList<>();
+    private String appId;
+
+    public SyncRequestDto() {}
+
+    public SyncRequestDto(String appId) {
+        this.appId = appId;
+    }
 
     public void addFileProperties(FileProperties fileProperties) {
         filePropertiesList.add(fileProperties);
@@ -15,6 +21,10 @@ public class SyncRequestDto {
 
     public List<FileProperties> getFilePropertiesList() {
         return new ArrayList<>(filePropertiesList);
+    }
+
+    public String getAppId() {
+        return appId;
     }
 
     @Override

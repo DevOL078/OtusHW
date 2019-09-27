@@ -2,7 +2,9 @@ package ru.otus.salamandra.app.update;
 
 import com.google.gson.Gson;
 import org.apache.camel.Exchange;
+import ru.otus.salamandra.app.config.AppConfigManager;
 import ru.otus.salamandra.app.store.FileNameStorage;
+import ru.otus.salamandra.app.store.SessionStore;
 import ru.otus.salamandra.dto.FileDto;
 import ru.otus.salamandra.util.FileUtil;
 
@@ -10,14 +12,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UpdateProcessor {
 
-    private final String dirPath = "C:\\Users\\Dmitry\\Desktop\\Otus\\OtusHW\\salamandra-storage\\salamandra-app\\files";
-    private final int DELAY_PERIOD = 5;
+    private final String baseDirPath = SessionStore.getInstance().getBaseDirPath();
+    private final int delayPeriod = AppConfigManager.getInstance().getIntConf("update.delaySec");
 
     public String process(Exchange exchange) {
         File fileInput = exchange.getIn().getBody(File.class);
@@ -25,17 +25,20 @@ public class UpdateProcessor {
             return null;
         }
         System.out.println("Update file: " + fileInput.getAbsolutePath());
-        List<String> relativePath = FileUtil.getRelativePath(dirPath, fileInput.getAbsolutePath());
+        List<String> relativePath = FileUtil.getRelativePath(baseDirPath, fileInput.getAbsolutePath());
         byte[] content = readAllBytes(fileInput);
         int fileSize = content.length;
         LocalDateTime lastModifiedTime = FileUtil.getLastModifiedTime(fileInput.getAbsolutePath());
+        String login = SessionStore.getInstance().getUserLogin();
 
         return new Gson().toJson(
                 new FileDto(
                         relativePath,
                         fileSize,
                         content,
-                        lastModifiedTime));
+                        lastModifiedTime,
+                        login)
+        );
     }
 
     private byte[] readAllBytes(File file) {
@@ -50,7 +53,7 @@ public class UpdateProcessor {
     private boolean checkFileName(String fileName) {
         return FileNameStorage.getInstance().checkAndStore(fileName) &&
                 !FileUtil.getLastModifiedTime(fileName)
-                        .isAfter(LocalDateTime.now().minusSeconds(DELAY_PERIOD));
+                        .isAfter(LocalDateTime.now().minusSeconds(delayPeriod));
     }
 
 }

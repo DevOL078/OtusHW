@@ -14,6 +14,7 @@
     <modules>
         <module>salamandra-app</module>
         <module>salamandra-server</module>
+        <module>salamandra-util</module>
     </modules>
 
     <dependencies>

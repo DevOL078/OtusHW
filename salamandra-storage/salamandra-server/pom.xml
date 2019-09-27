@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>ru.otus</groupId>
-            <artifactId>salamandra-storage</artifactId>
+            <artifactId>salamandra-util</artifactId>
             <version>2019-03-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -53,6 +53,23 @@
             <version>9.4.1212</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.4.RELEASE</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

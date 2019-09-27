@@ -2,6 +2,8 @@ package ru.otus.salamandra.app.sync;
 
 import com.google.gson.Gson;
 import okhttp3.*;
+import ru.otus.salamandra.app.config.AppConfigManager;
+import ru.otus.salamandra.app.store.SessionStore;
 import ru.otus.salamandra.dto.SyncRequestDto;
 import ru.otus.salamandra.util.FileUtil;
 
@@ -17,8 +19,8 @@ import java.util.stream.Collectors;
 
 public class SyncJob {
 
-    private final int SYNC_PERIOD = 5000;
-    private final String BASE_DIR_PATH = "C:\\Users\\Dmitry\\Desktop\\Otus\\OtusHW\\salamandra-storage\\salamandra-app\\files";
+    private final String baseDirPath = SessionStore.getInstance().getBaseDirPath();
+    private final int delayMs = AppConfigManager.getInstance().getIntConf("sync.delayMs");
     private AtomicBoolean isActive = new AtomicBoolean();
 
     public void startJob() {
@@ -27,7 +29,7 @@ public class SyncJob {
             while (isActive.get()) {
                 doPostRequest(getSyncRequestDto());
                 try {
-                    Thread.sleep(SYNC_PERIOD);
+                    Thread.sleep(delayMs);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -40,14 +42,15 @@ public class SyncJob {
     }
 
     private SyncRequestDto getSyncRequestDto() {
-        SyncRequestDto syncRequestDto = new SyncRequestDto();
+        String appId = SessionStore.getInstance().getAppId();
+        SyncRequestDto syncRequestDto = new SyncRequestDto(appId);
         try {
-            List<File> filesInBaseDir = Files.walk(Paths.get(BASE_DIR_PATH))
+            List<File> filesInBaseDir = Files.walk(Paths.get(baseDirPath))
                     .filter(Files::isRegularFile)
                     .map(Path::toFile)
                     .collect(Collectors.toList());
             filesInBaseDir.forEach(f -> {
-                List<String> relativePath = FileUtil.getRelativePath(BASE_DIR_PATH, f.getAbsolutePath());
+                List<String> relativePath = FileUtil.getRelativePath(baseDirPath, f.getAbsolutePath());
                 LocalDateTime lastModifiedTime = FileUtil.getLastModifiedTime(f.getAbsolutePath());
                 syncRequestDto.addFileProperties(
                         new SyncRequestDto.FileProperties(relativePath, lastModifiedTime));
@@ -67,8 +70,9 @@ public class SyncJob {
 
             String json = new Gson().toJson(syncRequestDto);
             RequestBody body = RequestBody.create(JSON, json);
+            String login = SessionStore.getInstance().getUserLogin();
             Request request = new Request.Builder()
-                    .url("http://localhost:8080/sync/test")
+                    .url("http://localhost:8080/sync/" + login)
                     .post(body)
                     .build();
             Response response = client.newCall(request).execute();

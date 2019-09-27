@@ -9,6 +9,10 @@ import ru.otus.salamandra.dto.SyncRequestDto;
 import ru.otus.salamandra.server.domain.File;
 import ru.otus.salamandra.server.domain.User;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +32,7 @@ public class SyncProcessor {
 
         List<File> filesToSend = getFilesToSend(filesFromDB, filePropertiesList);
         System.out.println(filesToSend);
-        filesToSend.forEach(this::sendFiles);
+        filesToSend.forEach(f -> sendFiles(f, syncRequestDto.getAppId()));
     }
 
     private String getAggregatedRelativePath(List<String> relativePath) {
@@ -60,18 +64,31 @@ public class SyncProcessor {
         return filesToSend;
     }
 
-    private void sendFiles(File file) {
+    private void sendFiles(File file, String appId) {
         List<String> relativePath = Arrays.asList(file.getFileName().split("/"));
 
         FileDto fileDto = new FileDto(
                 relativePath,
                 file.getFileSize(),
-                new byte[5],        //TODO
-                file.getLastModifiedTime()
+                getBytes(file),
+                file.getLastModifiedTime(),
+                file.getUser().getLogin()
         );
 
         System.out.println("Sending to Rabbit");
-        rabbitTemplate.convertAndSend("sync", file.getUser().getLogin(), new Gson().toJson(fileDto));
+        String routingKey = file.getUser().getLogin() + "/" + appId;
+        rabbitTemplate.convertAndSend("sync", routingKey, new Gson().toJson(fileDto));
+    }
+
+    private byte[] getBytes(File file) {
+        try {
+            Path path = Paths.get(BASE_DIR_PATH, file.getUser().getStorageDir(), file.getFileName());
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
+            System.err.println("File reading error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

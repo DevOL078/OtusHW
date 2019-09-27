@@ -1,15 +1,15 @@
 package ru.otus.salamandra.app.store;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FileNameStorage {
 
     private static FileNameStorage instance = new FileNameStorage();
-    private final List<String> fileNames;
+    private final Set<String> fileNames;
 
-    private FileNameStorage(){
-        fileNames = new ArrayList<>();
+    private FileNameStorage() {
+        fileNames = new HashSet<>();
     }
 
     public static synchronized FileNameStorage getInstance() {
@@ -17,7 +17,7 @@ public class FileNameStorage {
     }
 
     public boolean checkAndStore(String fileName) {
-        if(fileNames.contains(fileName)) {
+        if (fileNames.contains(fileName)) {
             return true;
         } else {
             fileNames.add(fileName);

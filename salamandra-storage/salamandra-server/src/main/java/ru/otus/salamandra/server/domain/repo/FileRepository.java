@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface FileRepository extends CrudRepository<File, Long> {
-    Optional<File> findByFileName(String fileName);
+    Optional<File> findByUserIdAndFileName(Long userId, String fileName);
 }
