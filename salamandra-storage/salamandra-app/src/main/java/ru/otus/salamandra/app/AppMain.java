@@ -41,6 +41,8 @@ public class AppMain {
         new RouteService().startRoute();
         System.out.println("Updating route has been started");
 
+        Thread.sleep(5000);
+
         new SyncJob().startJob();
         System.out.println("Start sync job");
 

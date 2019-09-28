@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
-import java.time.ZoneId;
 import java.util.List;
 
 public class SyncProcessor {
@@ -24,9 +22,7 @@ public class SyncProcessor {
                 Files.delete(filePath);
                 Files.createFile(filePath);
                 Files.write(filePath, fileDto.getContent());
-                Files.setLastModifiedTime(filePath, FileTime.from(
-                        fileDto.getLastModifiedTime().atZone(ZoneId.systemDefault()).toInstant()
-                ));
+                FileNameStorage.getInstance().syncUpdate(filePath.toString(), fileDto.getVersion());
                 System.out.println("SYNC: Rewrite file: " + filePath);
             } catch (IOException e) {
                 System.err.println("Sync saving error: \"" + e.getMessage() + "\"");
@@ -36,10 +32,7 @@ public class SyncProcessor {
                 Files.createDirectories(filePath.getParent());
                 Files.createFile(filePath);
                 Files.write(filePath, fileDto.getContent());
-                Files.setLastModifiedTime(filePath, FileTime.from(
-                        fileDto.getLastModifiedTime().atZone(ZoneId.systemDefault()).toInstant()
-                ));
-                FileNameStorage.getInstance().checkAndStore(filePath.toString());
+                FileNameStorage.getInstance().syncUpdate(filePath.toString(), fileDto.getVersion());
                 System.out.println("SYNC: Create new file: " + filePath);
             } catch (IOException e) {
                 System.err.println("Sync saving error: \"" + e.getMessage() + "\"");

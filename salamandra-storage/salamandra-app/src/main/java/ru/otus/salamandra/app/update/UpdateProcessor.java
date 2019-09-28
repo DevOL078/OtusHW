@@ -21,22 +21,22 @@ public class UpdateProcessor {
 
     public String process(Exchange exchange) {
         File fileInput = exchange.getIn().getBody(File.class);
-        if(checkFileName(fileInput.getAbsolutePath())) {
+        if(!checkFile(fileInput.getAbsolutePath())) {
             return null;
         }
         System.out.println("Update file: " + fileInput.getAbsolutePath());
         List<String> relativePath = FileUtil.getRelativePath(baseDirPath, fileInput.getAbsolutePath());
         byte[] content = readAllBytes(fileInput);
         int fileSize = content.length;
-        LocalDateTime lastModifiedTime = FileUtil.getLastModifiedTime(fileInput.getAbsolutePath());
         String login = SessionStore.getInstance().getUserLogin();
+        int version = FileNameStorage.getInstance().getVersion(fileInput.getAbsolutePath());
 
         return new Gson().toJson(
                 new FileDto(
                         relativePath,
                         fileSize,
                         content,
-                        lastModifiedTime,
+                        version,
                         login)
         );
     }
@@ -50,10 +50,16 @@ public class UpdateProcessor {
         return null;
     }
 
-    private boolean checkFileName(String fileName) {
-        return FileNameStorage.getInstance().checkAndStore(fileName) &&
-                !FileUtil.getLastModifiedTime(fileName)
-                        .isAfter(LocalDateTime.now().minusSeconds(delayPeriod));
+    private boolean checkFile(String fileName) {
+        String fileStatus = FileNameStorage.getInstance().fileStatus(fileName);
+        boolean lastModifiedTimeCheck = FileUtil.getLastModifiedTime(fileName)
+                .isAfter(LocalDateTime.now().minusSeconds(delayPeriod));
+        if(fileStatus.equals("CREATED") ||
+                fileStatus.equals("UPDATED") && lastModifiedTimeCheck) {
+            FileNameStorage.getInstance().saveOrUpdate(fileName);
+            return true;
+        }
+        return false;
     }
 
 }

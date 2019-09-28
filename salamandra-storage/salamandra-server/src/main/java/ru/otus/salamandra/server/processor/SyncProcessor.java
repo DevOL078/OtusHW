@@ -3,6 +3,7 @@ package ru.otus.salamandra.server.processor;
 import com.google.gson.Gson;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.salamandra.dto.FileDto;
 import ru.otus.salamandra.dto.SyncRequestDto;
@@ -21,7 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class SyncProcessor {
 
-    private final String BASE_DIR_PATH = "C:\\Users\\Dmitry\\Desktop\\Otus\\OtusHW\\salamandra-storage\\salamandra-server\\storage";
+    @Value("${application.storage.path}")
+    private String storagePath;
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
@@ -52,7 +54,7 @@ public class SyncProcessor {
                 //Сравниваем время изменения; если на сервере файл менялся позже -> отправляем его на клиент
                 SyncRequestDto.FileProperties fileProperties = filePropsFromClient.get(
                         fileNamesFromClient.indexOf(file.getFileName()));
-                if (file.getLastModifiedTime().isAfter(fileProperties.getLastModifiedTime())) {
+                if (file.getVersion() > fileProperties.getVersion()) {
                     filesToSend.add(file);
                 }
             } else {
@@ -71,7 +73,7 @@ public class SyncProcessor {
                 relativePath,
                 file.getFileSize(),
                 getBytes(file),
-                file.getLastModifiedTime(),
+                file.getVersion(),
                 file.getUser().getLogin()
         );
 
@@ -82,7 +84,7 @@ public class SyncProcessor {
 
     private byte[] getBytes(File file) {
         try {
-            Path path = Paths.get(BASE_DIR_PATH, file.getUser().getStorageDir(), file.getFileName());
+            Path path = Paths.get(storagePath, file.getUser().getStorageDir(), file.getFileName());
             return Files.readAllBytes(path);
         } catch (IOException e) {
             System.err.println("File reading error: " + e.getMessage());

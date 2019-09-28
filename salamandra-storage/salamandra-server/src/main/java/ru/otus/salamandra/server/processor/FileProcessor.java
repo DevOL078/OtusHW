@@ -2,6 +2,7 @@ package ru.otus.salamandra.server.processor;
 
 import com.google.gson.Gson;
 import org.apache.camel.Exchange;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.otus.salamandra.dto.FileDto;
 import ru.otus.salamandra.server.domain.File;
@@ -18,7 +19,8 @@ import java.util.Optional;
 @Component
 public class FileProcessor {
 
-    private final String storagePath = "C:\\Users\\Dmitry\\Desktop\\Otus\\OtusHW\\salamandra-storage\\salamandra-server\\storage";
+    @Value("${application.storage.path}")
+    private String storagePath;
 
     private FileRepository fileRepository;
     private UserRepository userRepository;
@@ -53,7 +55,7 @@ public class FileProcessor {
             File file = new File(
                     relativePath,
                     fileDto.getFileSize(),
-                    fileDto.getLastModifiedTime(),
+                    fileDto.getVersion(),
                     user
             );
 
@@ -64,13 +66,13 @@ public class FileProcessor {
             Optional<File> fileFromDBOpt = fileRepository.findByUserIdAndFileName(user.getId(), relativePath);
             if(fileFromDBOpt.isPresent()) {
                 File fileFromDB = fileFromDBOpt.get();
-                if(fileDto.getLastModifiedTime().isAfter(fileFromDB.getLastModifiedTime())) {
+                if(fileDto.getVersion() > fileFromDB.getVersion()) {
                     //если файл редактировался после сохранения на сервере -> перезаписываем
                     Files.delete(filePath);
                     Files.createFile(filePath);
                     Files.write(filePath, fileDto.getContent());
 
-                    fileFromDB.setLastModifiedTime(fileDto.getLastModifiedTime());
+                    fileFromDB.setVersion(fileDto.getVersion());
                     fileRepository.save(fileFromDB);
                     System.out.println("File update: " + filePath);
                 }
@@ -86,7 +88,7 @@ public class FileProcessor {
                 File newFile = new File(
                         relativePath,
                         fileDto.getFileSize(),
-                        fileDto.getLastModifiedTime(),
+                        fileDto.getVersion(),
                         user
                 );
                 fileRepository.save(newFile);

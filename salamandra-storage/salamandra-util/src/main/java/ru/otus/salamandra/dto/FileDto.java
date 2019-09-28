@@ -7,18 +7,18 @@ public class FileDto {
     private final byte[] content;
     private final List<String> relativePath;
     private final int fileSize;
-    private final LocalDateTime lastModifiedTime;
+    private final int version;
     private final String login;
 
     public FileDto(List<String> relativePath,
                    int fileSize,
                    byte[] content,
-                   LocalDateTime lastModifiedTime,
+                   int version,
                    String login) {
         this.content = content;
         this.relativePath = relativePath;
         this.fileSize = fileSize;
-        this.lastModifiedTime = lastModifiedTime;
+        this.version = version;
         this.login = login;
     }
 
@@ -34,8 +34,8 @@ public class FileDto {
         return fileSize;
     }
 
-    public LocalDateTime getLastModifiedTime() {
-        return lastModifiedTime;
+    public int getVersion() {
+        return version;
     }
 
     public String getLogin() {

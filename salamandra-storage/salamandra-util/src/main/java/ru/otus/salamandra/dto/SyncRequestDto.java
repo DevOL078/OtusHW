@@ -34,26 +34,26 @@ public class SyncRequestDto {
 
     public static class FileProperties {
         private List<String> relativePath;
-        private LocalDateTime lastModifiedTime;
+        private int version;
 
-        public FileProperties(List<String> relativePath, LocalDateTime lastModifiedTime) {
+        public FileProperties(List<String> relativePath, int version) {
             this.relativePath = relativePath;
-            this.lastModifiedTime = lastModifiedTime;
+            this.version = version;
         }
 
         public List<String> getRelativePath() {
             return relativePath;
         }
 
-        public LocalDateTime getLastModifiedTime() {
-            return lastModifiedTime;
+        public int getVersion() {
+            return version;
         }
 
         @Override
         public String toString() {
-            return String.format("FileProperties [relativePath = %s, lastModifiedTime = %s]",
+            return String.format("FileProperties [relativePath = %s, version = %d]",
                     relativePath,
-                    lastModifiedTime);
+                    version);
         }
     }
 

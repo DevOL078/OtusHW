@@ -19,7 +19,7 @@ public class File {
     private int fileSize;
 
     @Column(nullable = false)
-    private LocalDateTime lastModifiedTime;
+    private int version;
 
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -35,11 +35,11 @@ public class File {
 
     public File(String fileName,
                 int fileSize,
-                LocalDateTime lastModifiedTime,
+                int version,
                 User user) {
         this.fileName = fileName;
         this.fileSize = fileSize;
-        this.lastModifiedTime = lastModifiedTime;
+        this.version = version;
         this.user = user;
     }
 
@@ -68,8 +68,8 @@ public class File {
         return user;
     }
 
-    public LocalDateTime getLastModifiedTime() {
-        return lastModifiedTime;
+    public int getVersion() {
+        return version;
     }
 
     public void setId(Long id) {
@@ -96,13 +96,13 @@ public class File {
         this.user = user;
     }
 
-    public void setLastModifiedTime(LocalDateTime lastModifiedTime) {
-        this.lastModifiedTime = lastModifiedTime;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     @Override
     public String toString() {
-        return String.format("File [id = %d, fileName = %s, fileSize = %d, lastModifiedTime = %s, createdAt = %s, updatedAt = %s]",
-                id, fileName, fileSize, lastModifiedTime, createdAt, updatedAt);
+        return String.format("File [id = %d, fileName = %s, fileSize = %d, version = %d, createdAt = %s, updatedAt = %s]",
+                id, fileName, fileSize, version, createdAt, updatedAt);
     }
 }

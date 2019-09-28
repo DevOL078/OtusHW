@@ -3,6 +3,7 @@ package ru.otus.salamandra.app.sync;
 import com.google.gson.Gson;
 import okhttp3.*;
 import ru.otus.salamandra.app.config.AppConfigManager;
+import ru.otus.salamandra.app.store.FileNameStorage;
 import ru.otus.salamandra.app.store.SessionStore;
 import ru.otus.salamandra.dto.SyncRequestDto;
 import ru.otus.salamandra.util.FileUtil;
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -51,9 +51,12 @@ public class SyncJob {
                     .collect(Collectors.toList());
             filesInBaseDir.forEach(f -> {
                 List<String> relativePath = FileUtil.getRelativePath(baseDirPath, f.getAbsolutePath());
-                LocalDateTime lastModifiedTime = FileUtil.getLastModifiedTime(f.getAbsolutePath());
-                syncRequestDto.addFileProperties(
-                        new SyncRequestDto.FileProperties(relativePath, lastModifiedTime));
+                Integer version = FileNameStorage.getInstance().getVersion(f.getAbsolutePath());
+                if (version != null) {
+                    //Если файл уже обработался UpdateProcessor
+                    syncRequestDto.addFileProperties(
+                            new SyncRequestDto.FileProperties(relativePath, version));
+                }
             });
             return syncRequestDto;
         } catch (IOException e) {
