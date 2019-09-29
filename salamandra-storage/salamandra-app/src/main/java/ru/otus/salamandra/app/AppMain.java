@@ -46,7 +46,7 @@ public class AppMain {
         new SyncJob().startJob();
         System.out.println("Start sync job");
 
-        while(true){}
+//        while(true){}
     }
 
     private static void login() {

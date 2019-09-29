@@ -5,6 +5,7 @@ import okhttp3.*;
 import ru.otus.salamandra.app.config.AppConfigManager;
 import ru.otus.salamandra.app.store.FileNameStorage;
 import ru.otus.salamandra.app.store.SessionStore;
+import ru.otus.salamandra.dto.FileProperties;
 import ru.otus.salamandra.dto.SyncRequestDto;
 import ru.otus.salamandra.util.FileUtil;
 
@@ -14,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -22,23 +25,27 @@ public class SyncJob {
     private final String baseDirPath = SessionStore.getInstance().getBaseDirPath();
     private final int delayMs = AppConfigManager.getInstance().getIntConf("sync.delayMs");
     private AtomicBoolean isActive = new AtomicBoolean();
+    private final ExecutorService executorService;
+
+    public SyncJob() {
+        executorService = Executors.newScheduledThreadPool(1);
+    }
 
     public void startJob() {
         isActive.set(true);
-        new Thread(() -> {
-            while (isActive.get()) {
-                doPostRequest(getSyncRequestDto());
-                try {
-                    Thread.sleep(delayMs);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        executorService.submit(() -> {
+            doPostRequest(getSyncRequestDto());
+            try {
+                Thread.sleep(delayMs);
+            } catch (InterruptedException e) {
+                System.err.println("ERROR: " + e.getMessage());
+                executorService.shutdownNow();
             }
-        }).start();
+        });
     }
 
     public void stopJob() {
-        isActive.set(false);
+        executorService.shutdownNow();
     }
 
     private SyncRequestDto getSyncRequestDto() {
@@ -55,7 +62,7 @@ public class SyncJob {
                 if (version != null) {
                     //Если файл уже обработался UpdateProcessor
                     syncRequestDto.addFileProperties(
-                            new SyncRequestDto.FileProperties(relativePath, version));
+                            new FileProperties(relativePath, version));
                 }
             });
             return syncRequestDto;

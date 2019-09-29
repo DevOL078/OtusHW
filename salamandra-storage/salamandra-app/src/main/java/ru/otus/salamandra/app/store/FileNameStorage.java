@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class FileNameStorage {
 
-    private static FileNameStorage instance = new FileNameStorage();
+    private static final FileNameStorage instance = new FileNameStorage();
     private final Map<String, StorageElement> filesInfo;
 
     private FileNameStorage() {

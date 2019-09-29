@@ -2,10 +2,10 @@ package ru.otus.salamandra.server.processor;
 
 import com.google.gson.Gson;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.salamandra.dto.FileDto;
+import ru.otus.salamandra.dto.FileProperties;
 import ru.otus.salamandra.dto.SyncRequestDto;
 import ru.otus.salamandra.server.domain.File;
 import ru.otus.salamandra.server.domain.User;
@@ -25,23 +25,29 @@ public class SyncProcessor {
     @Value("${application.storage.path}")
     private String storagePath;
 
-    @Autowired
+    @Value("${application.rabbit.syncExchange}")
+    private String syncExchange;
+
     private RabbitTemplate rabbitTemplate;
+
+    public SyncProcessor(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     public void process(SyncRequestDto syncRequestDto, User user) {
         List<File> filesFromDB = user.getFiles();
-        List<SyncRequestDto.FileProperties> filePropertiesList = syncRequestDto.getFilePropertiesList();
+        List<FileProperties> filePropertiesList = syncRequestDto.getFilePropertiesList();
 
         List<File> filesToSend = getFilesToSend(filesFromDB, filePropertiesList);
         System.out.println(filesToSend);
-        filesToSend.forEach(f -> sendFiles(f, syncRequestDto.getAppId()));
+        filesToSend.forEach(f -> sendFile(f, syncRequestDto.getAppId()));
     }
 
     private String getAggregatedRelativePath(List<String> relativePath) {
         return String.join("\\", relativePath);
     }
 
-    private List<File> getFilesToSend(List<File> filesFromDB, List<SyncRequestDto.FileProperties> filePropsFromClient) {
+    private List<File> getFilesToSend(List<File> filesFromDB, List<FileProperties> filePropsFromClient) {
         List<String> fileNamesFromClient = filePropsFromClient.stream()
                 .map(fp -> getAggregatedRelativePath(fp.getRelativePath()))
                 .collect(Collectors.toList());
@@ -52,7 +58,7 @@ public class SyncProcessor {
             if (fileNamesFromClient.contains(file.getFileName())) {
                 //Файл есть и на клиенте, и на сервере
                 //Сравниваем время изменения; если на сервере файл менялся позже -> отправляем его на клиент
-                SyncRequestDto.FileProperties fileProperties = filePropsFromClient.get(
+                FileProperties fileProperties = filePropsFromClient.get(
                         fileNamesFromClient.indexOf(file.getFileName()));
                 if (file.getVersion() > fileProperties.getVersion()) {
                     filesToSend.add(file);
@@ -66,7 +72,7 @@ public class SyncProcessor {
         return filesToSend;
     }
 
-    private void sendFiles(File file, String appId) {
+    private void sendFile(File file, String appId) {
         List<String> relativePath = Arrays.asList(file.getFileName().split("/"));
 
         FileDto fileDto = new FileDto(
@@ -79,7 +85,7 @@ public class SyncProcessor {
 
         System.out.println("Sending to Rabbit");
         String routingKey = file.getUser().getLogin() + "/" + appId;
-        rabbitTemplate.convertAndSend("sync", routingKey, new Gson().toJson(fileDto));
+        rabbitTemplate.convertAndSend(syncExchange, routingKey, new Gson().toJson(fileDto));
     }
 
     private byte[] getBytes(File file) {

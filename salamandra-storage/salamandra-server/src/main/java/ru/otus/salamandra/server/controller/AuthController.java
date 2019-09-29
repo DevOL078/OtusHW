@@ -1,7 +1,6 @@
 package ru.otus.salamandra.server.controller;
 
 import com.google.gson.Gson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,8 +19,11 @@ import java.util.UUID;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
     private UserRepository userRepository;
+
+    public AuthController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/signIn")
     @ResponseBody
@@ -31,7 +33,7 @@ public class AuthController {
 
         Optional<User> userOpt = userRepository.findByLoginAndEncryptedPassword(
                 userDto.getLogin(), userDto.getPassword());
-        if(userOpt.isEmpty()) {
+        if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -45,7 +47,7 @@ public class AuthController {
         System.out.println("Register: " + userDto);
 
         Optional<User> userOpt = userRepository.findByLogin(userDto.getLogin());
-        if(userOpt.isPresent()) {
+        if (userOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 

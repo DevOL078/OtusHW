@@ -18,6 +18,7 @@ public class UpdateProcessor {
 
     private final String baseDirPath = SessionStore.getInstance().getBaseDirPath();
     private final int delayPeriod = AppConfigManager.getInstance().getIntConf("update.delaySec");
+    private final Gson gson = new Gson();
 
     public String process(Exchange exchange) {
         File fileInput = exchange.getIn().getBody(File.class);
@@ -31,7 +32,7 @@ public class UpdateProcessor {
         String login = SessionStore.getInstance().getUserLogin();
         int version = FileNameStorage.getInstance().getVersion(fileInput.getAbsolutePath());
 
-        return new Gson().toJson(
+        return gson.toJson(
                 new FileDto(
                         relativePath,
                         fileSize,
